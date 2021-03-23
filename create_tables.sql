@@ -43,7 +43,7 @@ create table grade_distribution(
 	);
 #4
 create table instructors(
-	id int not null,
+	id bigint not null,
 	name text,
 	constraint instructors_key primary key (id)
 	);
