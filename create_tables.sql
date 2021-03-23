@@ -49,3 +49,24 @@ create table instructors(
 	);
 #5-8
 #9-11
+#9
+create table subjects(
+	code int not null,
+	name text not null,
+	abbreviation text not null,
+	constraint subjects_key primary key (code)
+	);
+#10
+create table teachings(
+	instructor_id bigint not null,
+	section_uuid text not null,
+	constraint instructor_id_ref foreign key (instructor_id) references instructors(id),
+	constraint section_uuid_ref foreign key (section_uuid) references sections(uuid)
+	);
+#11
+create table term_code(
+	code int not null,
+	year int not null,
+	term text not null,
+	constraint term_code_key primary key (code)
+	);
