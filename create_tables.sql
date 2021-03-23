@@ -48,13 +48,54 @@ create table instructors(
 	constraint instructors_key primary key (id)
 	);
 #5-8
+#5
+create table rooms(
+	uuid text not null,
+	facility_code text,
+	room_code text,
+	constraint rooms_key primary key (uuid)
+	);
+#6
+create table schedules(
+	uuid text not null,
+	start_time int not null,
+	end_time int not null,
+	mon boolean not null,
+	tues boolean not null,
+	wed boolean not null,
+	thurs boolean not null,
+	fri boolean not null,
+	sat boolean not null,
+	sun boolean not null,
+	constraint schedules_key primary key (uuid)
+	);
+#7
+create table sections(
+	uuid text not null,
+	course_offering_uuid text not null,
+	section_type text,
+	num int,
+	room_uuid text,
+	schedule_uuid text,
+	constraint sections_key primary key (uuid),
+	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid),
+	constraint room_uuid_ref foreign key (room_uuid) references rooms(uuid),
+	constraint schedule_uuid_ref foreign key (schedule_uuid) references schedules(uuid)
+	);
 #9-11
 #9
 create table subjects(
-	code int not null,
+	code text not null,
 	name text not null,
 	abbreviation text not null,
 	constraint subjects_key primary key (code)
+	);
+#8
+create table subject_memberships(
+	subject_code text not null,
+	course_offering_uuid text not null,
+	constraint subject_code_ref foreign key (subject_code) references subjects(code),
+	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid)
 	);
 #10
 create table teachings(
