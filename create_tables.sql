@@ -93,14 +93,39 @@ create table teachings(
 	constraint instructor_id_ref foreign key (instructor_id) references instructors(id),
 	constraint section_uuid_ref foreign key (section_uuid) references sections(uuid)
 	);
-\copy courses from 'database/courses.csv' delimiter ',' csv header;
-\copy term_code from 'database/term_code.csv' delimiter ',' csv header;
-\copy course_offerings from 'database/course_offerings.csv' delimiter ',' csv header;
-\copy grade_distributions from 'database/grade_distributions.csv' delimiter ',' csv header;
-\copy instructors from 'database/instructors.csv' delimiter ',' csv header;
-\copy rooms from 'database/rooms.csv' delimiter ',' csv header;
-\copy schedules from 'database/schedules.csv' delimiter ',' csv header;
-\copy sections from 'database/sections.csv' delimiter ',' csv header;
-\copy subjects from 'database/subjects.csv' delimiter ',' csv header;
-\copy subject_memberships from 'database/subject_memberships.csv' delimiter ',' csv header;
-\copy teachings from 'database/teachings.csv' delimiter ',' csv header;
+create table students(
+	id bigint primary key,
+	name text
+);
+create table pending_requests(
+	course_offering text not null,
+	student_id bigint not null,
+	constraint pending_requests_key primary key (course_offering,student_id),
+	constraint course_offering_ref foreign key (course_offering) references course_offerings(uuid),
+	constraint student_id_ref foreign key (student_id) references students(id)
+	);
+create table rejected_requests(
+	course_offering text not null,
+	student_id bigint not null,
+	constraint rejected_requests_key primary key (course_offering,student_id),
+	constraint course_offering_ref foreign key (course_offering) references course_offerings(uuid),
+	constraint student_id_ref foreign key (student_id) references students(id)
+	);
+create table course_registrations(
+	course_offering text not null,
+	student_id bigint not null,
+	constraint course_registrations_key primary key (course_offering,student_id),
+	constraint course_offering_ref foreign key (course_offering) references course_offerings(uuid),
+	constraint student_id_ref foreign key (student_id) references students(id)
+	);
+-- \copy courses from 'database/courses.csv' delimiter ',' csv header;
+-- \copy term_code from 'database/term_code.csv' delimiter ',' csv header;
+-- \copy course_offerings from 'database/course_offerings.csv' delimiter ',' csv header;
+-- \copy grade_distributions from 'database/grade_distributions.csv' delimiter ',' csv header;
+-- \copy instructors from 'database/instructors.csv' delimiter ',' csv header;
+-- \copy rooms from 'database/rooms.csv' delimiter ',' csv header;
+-- \copy schedules from 'database/schedules.csv' delimiter ',' csv header;
+-- \copy sections from 'database/sections.csv' delimiter ',' csv header;
+-- \copy subjects from 'database/subjects.csv' delimiter ',' csv header;
+-- \copy subject_memberships from 'database/subject_memberships.csv' delimiter ',' csv header;
+-- \copy teachings from 'database/teachings.csv' delimiter ',' csv header;
