@@ -15,6 +15,8 @@ create table course_offerings(
 	course_uuid text not null,
 	term_code int not null,
 	name text ,
+	reg_limit int,
+	room_required boolean,
 	constraint course_offerings_key primary key (uuid),
 	constraint course_uuid_ref foreign key (course_uuid) references courses(uuid),
 	constraint term_code_ref foreign key (term_code) references term_code(code)
