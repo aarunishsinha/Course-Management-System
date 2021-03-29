@@ -208,7 +208,7 @@ begin
 	-- select reg_limit from course_offerings where course_offerings.course_offering_uuid=course_offering_uuid;
 	select count(*) from 
 	(
-		select student_id from course_registrations where course_registrations.course_offering_uuid=course_offering_uuid) ;
+		select student_id from course_registrations where course_registrations.course_offering_uuid=course_offering_uuid) as t ;
 end $$ LANGUAGE plpgsql; 
 /*-----------------------------------------------------------------------------*/
 

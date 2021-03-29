@@ -120,6 +120,11 @@ create table course_registrations(
 	constraint course_offering_ref foreign key (course_offering) references course_offerings(uuid),
 	constraint student_id_ref foreign key (student_id) references students(id)
 	);
+create table addDrop(
+	term_code int not null,
+	constraint addDrop_key primary key (term_code),
+	constraint term_code_ref foreign key (term_code) references term_code(code)
+	);
 -- \copy courses from 'database/courses.csv' delimiter ',' csv header;
 -- \copy term_code from 'database/term_code.csv' delimiter ',' csv header;
 -- \copy course_offerings from 'database/course_offerings.csv' delimiter ',' csv header;
