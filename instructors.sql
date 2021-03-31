@@ -20,9 +20,9 @@ begin
 
 end $$ LANGUAGE plpgsql;
 
-start transaction;
-select  add_course_offering('e9a360bc-be2d-35d1-9684-a464bbbd0c15',1214,1,150,true,null,761703);
-rollback;
+-- start transaction;
+-- select  add_course_offering('e9a360bc-be2d-35d1-9684-a464bbbd0c15',1214,1,150,true,null,761703);
+-- rollback;
 /*-----------------------------------------------------------------------------*/
 
 -- 2-handling pending requests

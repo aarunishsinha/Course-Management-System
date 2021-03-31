@@ -1,15 +1,19 @@
-CREATE MATERIALIZED VIEW course_limits AS
-SELECT c.uuid as course_uuid,
-		c.name as course_name,
-		c.num as course_number,
-		(MAX(COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count))) as course_limit,
-		co.term_code as course_offering_term,
-		gd.section_number as section_number
-FROM ((grade_distributions gd 
-	join course_offerings co on (gd.course_offering_uuid=co.uuid))
-	join courses c on (co.course_uuid=c.uuid))
-GROUP BY (co.uuid,gd.section_number,c.uuid,c.name,c.num,co.term_code)
-ORDER BY c.num;
+with t as (select course_offering_uuid, section_number, (COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count)) as lim from grade_distributions as gd)
+ update sections set reg_limit= lim  from t where sections.course_offering_uuid=t.course_offering_uuid and sections.num=t.section_number;
+
+
+-- CREATE MATERIALIZED VIEW course_limits AS
+-- SELECT c.uuid as course_uuid,
+-- 		c.name as course_name,
+-- 		c.num as course_number,
+-- 		(MAX(COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count))) as course_limit,
+-- 		co.term_code as course_offering_term,
+-- 		gd.section_number as section_number
+-- FROM ((grade_distributions gd 
+-- 	join course_offerings co on (gd.course_offering_uuid=co.uuid))
+-- 	join courses c on (co.course_uuid=c.uuid))
+-- GROUP BY (co.uuid,gd.section_number,c.uuid,c.name,c.num,co.term_code)
+-- ORDER BY c.num;
 
 CREATE MATERIALIZED VIEW instructor_course AS
 SELECT i.id as instructor_id,
