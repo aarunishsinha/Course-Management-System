@@ -26,7 +26,7 @@ def main():
 def inst():
     global currentProfLoginId
     currentProfLoginId = request.form.get("ProfID")
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [])
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [])
 
 @app.route("/instructorScreen/AddCourse", methods = ["POST"])
 def instAC():
@@ -41,7 +41,7 @@ def instAC():
 
     # EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [])
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [])
 
 @app.route("/instructorScreen/Requests", methods = ["POST"])
 def instRequests():
@@ -52,7 +52,7 @@ def instRequests():
 
     # requests = EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [])
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = addGradeMsg, grades = [])
 
 @app.route("/instructorScreen/ProcessRequests", methods = ["POST"])
 def instProcessRequests():
@@ -63,7 +63,7 @@ def instProcessRequests():
 
     # requests = EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [])
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [])
 
 @app.route("/instructorScreen/Schedule", methods = ["POST"])
 def instSchedule():
@@ -85,7 +85,36 @@ def instEnrollments():
 
     # enrollment = EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment)
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = addGradeMsg, grades = [])
+
+
+@app.route("/instructorScreen/addGradeDistribution", methods = ["POST"])
+def instEnrollments():
+    # See what is to be done with AddCourseMsg
+    global currentProfLoginId
+    COID = request.form.get("COID")
+    SN = request.form.get("SN")
+    a = request.form.get("a")
+    ab = request.form.get("ab")
+    b = request.form.get("b")
+    bc = request.form.get("bc")
+    c = request.form.get("c")
+    d = request.form.get("d")
+    f = request.form.get("f")
+    s = request.form.get("s")
+    u = request.form.get("u")
+    cr = request.form.get("cr")
+    n = request.form.get("n")
+    p = request.form.get("p")
+    i = request.form.get("i")
+    nw = request.form.get("nw")
+    nr = request.form.get("nr")
+    others = request.form.get("others")
+    addGradeMsg = "Grade Distribution Updated"
+
+    # addGradeMsg = EXECUTE DATABASE QUERY HERE
+
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = addGradeMsg, grades = [])
 
 
 if __name__ == '__main__':
