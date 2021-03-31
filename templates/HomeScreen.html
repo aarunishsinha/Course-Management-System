@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="home student">
+  <h2>Student Login</h2>
+  <form class="student_form" action="/studentScreen" method="post">
+      <input type="text" name="StudentID"  placeholder="Enter Student ID">
+      <input type="submit" name="Login" value="Login">
+  </form>
+</div>
+
+<div class="home Prof">
+  <h2>Instructor Login</h2>
+  <form class="prof_form" action="/instructorScreen" method="post">
+      <input type="text" name="ProfID"  placeholder="Enter Instructor ID">
+      <input type="submit" name="Login" value="Login">
+  </form>
+</div>
+
+<div class="home Admin">
+  <h2>Admin Login</h2>
+  <form class="" action="AdminScreen" method="post">
+    <input type="submit" name="Login" value="Login">
+  </form>
+</div>
+
+
+{% endblock %}

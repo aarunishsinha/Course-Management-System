@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<!--start the form -->
+<form action="/updateSheet" method="post">
+<!-- Name of the file field (at the top) -->
+  <input type="text" name="name" value="{{name}}">
+  <p>Total: {{total}}</p>
+  <table >
+    <tbody  id="writeroot">
+    <th></th>
+    {% for a in data.columns %}
+      <th>{{a}}</th>
+    {% endfor %}
+
+    {% for i in range(data.shape[0]) %}
+      <tr>
+        <td><input type="button" value="Delete" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);"/></td>
+        <td><input type="button" value="Add" onclick="newRow(this.parentNode.parentNode)"/></td>
+        {% for j in data.columns %}
+          <td> {% if j == "Amount" %}
+                  {{data.loc[i,j]}}
+                {% else %}
+                {% if not data.loc[i,j] == data.loc[i,j] %}
+                <input type="text" name="{{j}}"  placeholder="{{j}}">
+                {% else %}
+                  <input type="text" name="{{j}}" value="{{data.loc[i,j]}}" placeholder="{{j}}">
+                {% endif %}{% endif %}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <input type="button" value="Add" onclick="moreFields()"/>
+  <input type="submit" name="Save" value="Save">
+  <input type="submit" name="PDF" formaction="/pdf" value="PDF">
+  </form>
+
+<table style="display: none" >
+  <tr id="readroot">
+    <td><input type="button" value="Delete" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);"/></td>
+    <td><input type="button" value="Add" onclick="newRow(this.parentNode.parentNode)"/></td>
+    {% for j in data.columns %}
+      <td> {% if j == "Amount" %}
+              0
+            {% else %}
+              <input type="text" name="{{j}}" placeholder="{{j}}">
+            {% endif %}</td>
+    {% endfor %}
+  </tr>
+</table>
+
+
+<script>
+  function moreFields() {
+	var newFields = document.getElementById('readroot').cloneNode(true);
+	newFields.id = '';
+	var insertHere = document.getElementById('writeroot');
+	insertHere.appendChild(newFields);
+}
+
+function newRow(row) {
+var newFields = document.getElementById('readroot').cloneNode(true);
+newFields.id = '';
+var floorName = row.querySelector("input[name='Floor Name']").value
+newFields.querySelector("input[name='Floor Name']").value = floorName
+var roomName = row.querySelector("input[name='Room Name']").value
+newFields.querySelector("input[name='Room Name']").value = roomName
+row.parentNode.insertBefore(newFields, row.nextSibling);
+}
+
+</script>
+{% endblock %}

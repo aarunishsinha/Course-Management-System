@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="InstructorBoxes InsAddCourse">
+  <h2>Add a Course to Teach</h2>
+  <form class="InsAddCourseForm" action="/instructorScreen/AddCourse" method="post">
+    <input type="text" name="CID" placeholder="Course ID">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="text" name="SN" placeholder="Section Number">
+    <input type="text" name="LM" placeholder="Registration Limit">
+    <input type="text" name="ST" placeholder="Section Type">
+    <!-- <input type="text" name="ID" placeholder="Instructor ID"> available due to logib!!-->
+    <label for="RoomReq">Is Room Required?</label>
+    <select id="RoomReq" name="RoomReq">
+      <option value="True">Yes</option>
+      <option value="False">No</option>
+    </select>
+    <p>{{AddCourseMsg}}</p>
+    <input type="submit" name="AddCourse" value="Add">
+  </form>
+</div>
+
+
+<div class="InstructorBoxes requests">
+  <h2>Manage Requests</h2>
+  <form class="InsRequests" action="instructorScreen/Requests" method="post">
+    <input type="text" name="COID" placeholder="Enter Course Offering ID">
+    <input type="submit" name="Submit" value="Show">
+  </form>
+  {% if requests|length > 0 %}
+    <h3>Requests:</h3>
+    <form class="" action="instructorScreen/ProcessRequests" method="post">
+      <table>
+        <th>COID</th><th>Student ID</th><th>Accept</th>
+        {% for i in range(requests|length) %}
+          <tr>
+            <td><input type="text" name="studentID" value="{{requests[i]}}" readonly></td>
+            <td><input type="radio" name="Accept" value="True"></td>
+          </tr>
+        {% endfor %}
+      </table>
+      <input type="Submit" name="Submit" value="Update">
+    </form>
+  {% endif %}
+</div>
+
+
+<div class="InstructorBoxes">
+
+</div>
+
+
+<div class="InstructorBoxes">
+
+</div>
+
+
+<div class="InstructorBoxes">
+
+</div>
+
+<div class="InstructorBoxes">
+
+</div>
+
+
+{% endblock %}
