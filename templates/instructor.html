@@ -107,15 +107,39 @@
   {% if grades|length > 0 %}
     <h3>Grade Distribution:</h3>
     <ol>
-      {% for i in range(grades|length) %}
-        <li>{{grades[i]}}</li>
-      {% endfor %}
+      <!--  see if there are tuples or just a simple list -->
+        <li>a: {{grades[0]}}</li>
+        <li>ab: {{grades[1]}}</li>
+        <li>b: {{grades[2]}}</li>
+        <li>bc: {{grades[3]}}</li>
+        <li>c: {{grades[4]}}</li>
+        <li>d: {{grades[5]}}</li>
+        <li>f: {{grades[6]}}</li>
+        <li>s: {{grades[7]}}</li>
+        <li>u: {{grades[8]}}</li>
+        <li>cr: {{grades[9]}}</li>
+        <li>n: {{grades[10]}}</li>
+        <li>p: {{grades[11]}}</li>
+        <li>i: {{grades[12]}}</li>
+        <li>nw: {{grades[13]}}</li>
+        <li>nr: {{grades[14]}}</li>
+        <li>others: {{grades[15]}}</li>
     </ol>
   {% endif %}
 
 </div>
 
-<div class="InstructorBoxes">
+<div class="InstructorBoxes room">
+  <form class="" action="/instructorScreen/room" method="post">
+    <input type="text" name="COID" placeholder="Enter Course Offering ID">
+    <input type="number" name="SN" placeholder="Enter Section Number">
+    <input type="submit" name="submit" value="Show Room">
+  </form>
+
+  {% if room !="" %}
+    <p>Room: {{room}}</p>
+    <p>Faculty Code: {{facultyCode}}</p>
+  {% endif %}
 
 </div>
 
