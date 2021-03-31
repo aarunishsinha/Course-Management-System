@@ -1,9 +1,13 @@
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for
 import os
+import psycopg2
 # import nltk
 import numpy as np
 # import pandas as pd
 
+conn = psycopg2.connect('dbname=postgres')
+
+cur = conn.cursor()
 
 app = Flask(__name__)
 # app['debug'] = True
@@ -40,6 +44,11 @@ def instAC():
     RoomReq = request.form.get("RoomReq")
 
     # EXECUTE DATABASE QUERY HERE
+    try:
+        query = "SELECT * from add_course_offering('%s',%s,%s,%s,%s,'%s',%s);" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId))
+        cur.execute(query)
+    except Exception as e:
+        print (e)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [])
 
@@ -48,9 +57,15 @@ def instRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     COID = request.form.get("COID")
-    requests = [123,1231,13,144]
+    # requests = [123,1231,13,144]
 
     # requests = EXECUTE DATABASE QUERY HERE
+    try:
+        query="SELECT * from get_pending_requests('%s');" % (str(COID))
+        cur.execute(query)
+        requests = cur.fetchall()
+    except Exception as e:
+        print (e)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = addGradeMsg, grades = [])
 
@@ -73,6 +88,12 @@ def instSchedule():
     schedule = []
 
     # schedule = EXECUTE DATABASE QUERY HERE
+    try:
+        query="SELECT * from get_instructor_schedule(%s,%s);" % (str(currentProfLoginId),str(TC))
+        cur.execute(query)
+        schedule=cur.fetchall()
+    except Exception as e:
+        print (e)
     #  Will make schedule.html once query is executed and exact form is known
     return render_template("schedule.html",currentProfLoginId = currentProfLoginId,schedule = schedule)
 
@@ -84,6 +105,12 @@ def instEnrollments():
     enrollment = ['Aniket','Aarunish','Jai']
 
     # enrollment = EXECUTE DATABASE QUERY HERE
+    try:
+        query="SELECT * from get_student_list('%s');" % (str(COID))
+        cur.execute(query)
+        enrollment=cur.fetchall()
+    except Exception as e:
+        print (e)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = addGradeMsg, grades = [])
 
