@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<h2>Welcome {{currentProfLoginId}} !</h2>
+<div class="InstructorBoxes InsAddCourse">
+  <h2>Add a Course to Teach</h2>
+  <form class="InsAddCourseForm" action="/instructorScreen/AddCourse" method="post">
+    <input type="text" name="CID" placeholder="Course ID">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="text" name="SN" placeholder="Section Number">
+    <input type="text" name="LM" placeholder="Registration Limit">
+    <input type="text" name="ST" placeholder="Section Type">
+    <!-- <input type="text" name="ID" placeholder="Instructor ID"> available due to logib!!-->
+    <label for="RoomReq">Is Room Required?</label>
+    <select id="RoomReq" name="RoomReq">
+      <option value="True">Yes</option>
+      <option value="False">No</option>
+    </select>
+    <p>{{AddCourseMsg}}</p>
+    <input type="submit" name="AddCourse" value="Add">
+  </form>
+</div>
+
+
+<div class="InstructorBoxes requests">
+  <h2>Manage Requests</h2>
+  <form class="InsRequests" action="/instructorScreen/Requests" method="post">
+    <input type="text" name="COID" placeholder="Enter Course Offering ID">
+    <input type="submit" name="Submit" value="Show">
+  </form>
+  {% if requests|length > 0 %}
+    <h3>Requests:</h3>
+    <form class="" action="/instructorScreen/ProcessRequests" method="post">
+      <table>
+        <th>Student ID</th><th>Accept</th>
+        {% for i in range(requests|length) %}
+          <tr>
+            <td><input type="text" name="studentID" value="{{requests[i][1]}}" readonly></td>
+            <!-- Remove radio buttons or change the class. Prefer submit buttons -->
+            <td><input type="radio" name="Accept" value="True"></td>
+          </tr>
+        {% endfor %}
+      </table>
+      <input type="Submit" name="Submit" value="Update">
+    </form>
+  {% endif %}
+</div>
+
+
+<div class="InstructorBoxes Schedule">
+  <h2>See Schedule</h2>
+  <form class="" action="/instructorScreen/Schedule" method="post">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="submit" name="submit" value="Show">
+  </form>
+</div>
+
+
+<div class="InstructorBoxes enrollment">
+  <h2>Enrollment list</h2>
+  <form class="" action="/instructorScreen/enrollment" method="post">
+    <input type="text" name="COID" placeholder="Enter Course Offering ID">
+    <input type="submit" name="submit" value="Show">
+  </form>
+  {% if enrollment|length > 0 %}
+    <h3>Students Enrolled:</h3>
+    <ol>
+      {% for i in range(enrollment|length) %}
+        <li>{{enrollment[i]}}</li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+</div>
+
+
+<div class="InstructorBoxes Grades">
+  <h2>Grade Distribution</h2>
+  <form class="" action="/instructorScreen/addGradeDistribution" method="post">
+    <input type="text" name="COID" placeholder="Course Offering ID">
+    <input type="number" name="SN" placeholder="Section Number">
+    <input type="number" name="a" placeholder="A Count">
+    <input type="number" name="ab" placeholder="AB Count">
+    <input type="number" name="b" placeholder="B Count">
+    <input type="number" name="bc" placeholder="BC Count">
+    <input type="number" name="c" placeholder="C Count">
+    <input type="number" name="d" placeholder="D Count">
+    <input type="number" name="f" placeholder="F Count">
+    <input type="number" name="s" placeholder="S Count">
+    <input type="number" name="u" placeholder="U Count">
+    <input type="number" name="cr" placeholder="CR Count">
+    <input type="number" name="n" placeholder="N Count">
+    <input type="number" name="p" placeholder="P Count">
+    <input type="number" name="i" placeholder="I Count">
+    <input type="number" name="nw" placeholder="NW Count">
+    <input type="number" name="nr" placeholder="NR Count">
+    <input type="number" name="others" placeholder="Others">
+    <input type="submit" name="submit" value="Add">
+    <p>addGradeMsg</p>
+  </form>
+
+  <form class="" action="/instructorScreen/getGradeDistribution" method="post">
+    <input type="text" name="COID" placeholder="Course Offering ID">
+    <input type="number" name="SN" placeholder="Secton Number">
+    <input type="submit" name="submit" value="Get">
+  </form>
+
+  {% if grades|length > 0 %}
+    <h3>Grade Distribution:</h3>
+    <ol>
+      <!--  see if there are tuples or just a simple list -->
+        <li>a: {{grades[0]}}</li>
+        <li>ab: {{grades[1]}}</li>
+        <li>b: {{grades[2]}}</li>
+        <li>bc: {{grades[3]}}</li>
+        <li>c: {{grades[4]}}</li>
+        <li>d: {{grades[5]}}</li>
+        <li>f: {{grades[6]}}</li>
+        <li>s: {{grades[7]}}</li>
+        <li>u: {{grades[8]}}</li>
+        <li>cr: {{grades[9]}}</li>
+        <li>n: {{grades[10]}}</li>
+        <li>p: {{grades[11]}}</li>
+        <li>i: {{grades[12]}}</li>
+        <li>nw: {{grades[13]}}</li>
+        <li>nr: {{grades[14]}}</li>
+        <li>others: {{grades[15]}}</li>
+    </ol>
+  {% endif %}
+
+</div>
+
+<div class="InstructorBoxes room">
+  <form class="" action="/instructorScreen/room" method="post">
+    <input type="text" name="COID" placeholder="Enter Course Offering ID">
+    <input type="number" name="SN" placeholder="Enter Section Number">
+    <input type="submit" name="submit" value="Show Room">
+  </form>
+
+  {% if room !="" %}
+    <p>Room: {{room}}</p>
+    <p>Faculty Code: {{facultyCode}}</p>
+  {% endif %}
+
+</div>
+
+
+{% endblock %}

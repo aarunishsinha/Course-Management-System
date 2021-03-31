@@ -40,7 +40,7 @@ create or replace function get_pending_requests(
 	) as $$
 begin
 
-	return query select student_id from pending_requests where course_offering=CO;
+	return query select student_id from pending_requests where pending_requests.course_offering=CO;
 end $$ LANGUAGE plpgsql;
 
 create or replace function process_pending_request(

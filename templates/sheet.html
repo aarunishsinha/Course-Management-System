@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+
+<!--start the form -->
+<form id="sheetForm" action="/updateSheet" method="post">
+<!-- Name of the file field (at the top) -->
+<div id="customerDetails">
+<h2>Customer Details:</h2>
+<label for="cname">Name: <input id = "cname" type="text" name="name" value="{{name}}"></label>
+<label for="contact">Contact:<input id="contact" type="text" name="contact" value="{{details[0]}}"></label>
+<label for="account">Account:<input id="account" type="text" name="account" value="{{details[1]}}"></label>
+<label for="address">Address:<input id="address" type="text" name="address" value="{{details[2]}}"></label>
+<p id="modified"> Last Modified: {{details[3]}}</p>
+<p id="total">Total: {{total}}</p>
+</div>
+  <table>
+    <tbody  id="writeroot">
+    <!-- <th>  <input type="button" value="Add Room" onclick="newBody(this)"/></th> -->
+    <th></th>
+    {% for j in data.columns %}
+    {% if j == "Floor Name" %}
+      <th></th>
+          {% endif %}
+    {% if j == "Room Name" %}
+        <th></th>
+          {% endif %}
+    {% if j == "Product Name" %}
+        <th></th>
+          {% endif %}
+      <th>{{j}}</th>
+    {% endfor %}
+
+    {% for i in range(data.shape[0]) %}
+      <tr>
+        <td><input type="button" value="-" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);"/></td>
+        {% for j in data.columns %}
+
+          <td> {% if j == "Amount" %}
+                  {{data.loc[i,j]}}
+                {% else %}
+                {% if j == "Floor Name" %}
+                    <input type="button" value="+" onclick="newFloor(this.parentNode.parentNode)"/></td><td>
+                      {% endif %}
+                {% if j == "Room Name" %}
+                    <input type="button" value="+" onclick="newRoom(this.parentNode.parentNode)"/></td><td>
+                      {% endif %}
+                {% if j == "Product Name" %}
+                    <input type="button" value="+" onclick="newProduct(this.parentNode.parentNode)"/></td><td>
+                      {% endif %}
+                {% if not data.loc[i,j] == data.loc[i,j] %}
+                <input type="text" name="{{j}}"  placeholder="{{j}}">
+                {% else %}
+                  <input type="text" name="{{j}}" value="{{data.loc[i,j]}}" placeholder="{{j}}">
+                {% endif %}{% endif %}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+
+  </table>
+
+  <!-- <input type="button" value="Add Floor" onclick="newTable(this)"/> -->
+  <div id = "SaveBar">
+  <input class="save" type="submit" name="Save" value="Save">
+  <select name="PDFSelect" >
+    <option value="With Subtotals With GST">With Subtotals With GST</option>
+    <option value="With Subtotals Without GST">With Subtotals Without GST</option>
+    <option value="Without Subtotals With GST">Without Subtotals With GST</option>
+    <option value="Without Subtotals Without GST">Without Subtotals Without GST</option>
+  </select>
+  <input class = "save" type="submit" name="PDF" formaction="/pdf" value="PDF">
+</div>
+
+  </form>
+
+
+<table id="newTable" style="display: none" >
+  <tbody >
+  <tr id="readroot" >
+    <td><input type="button" value="-" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);"/></td>
+    <!-- <td><input type="button" value="Add" onclick="newRow(this.parentNode.parentNode)"/></td> -->
+    {% for j in data.columns %}
+      <td> {% if j == "Amount" %}
+              0
+            {% else %}
+            {% if j == "Floor Name" %}
+                <input type="button" value="+" onclick="newFloor(this.parentNode.parentNode)"/></td><td>
+                  {% endif %}
+            {% if j == "Room Name" %}
+                <input type="button" value="+" onclick="newRoom(this.parentNode.parentNode)"/></td><td>
+                  {% endif %}
+            {% if j == "Product Name" %}
+                <input type="button" value="+" onclick="newProduct(this.parentNode.parentNode)"/></td><td>
+                  {% endif %}
+            {% if j == "GST" %}
+                  <input type="text" name="GST" placeholder="GST" value ="0">
+            {% else %}
+              <input type="text" name="{{j}}" placeholder="{{j}}">
+              {% endif %}
+            {% endif %}</td>
+    {% endfor %}
+  </tr>
+  </tbody>
+</table>
+
+
+
+
+<script>
+  function moreFields() {
+	var newFields = document.getElementById('readroot').cloneNode(true);
+	newFields.id = '';
+	var insertHere = document.getElementById('writeroot');
+	insertHere.appendChild(newFields);
+}
+
+  function newRoom(row) {
+  var newFields = document.getElementById('readroot').cloneNode(true);
+  newFields.id = '';
+  var floorName = row.querySelector("input[name='Floor Name']").value;
+  newFields.querySelector("input[name='Floor Name']").value = floorName;
+  // var roomName = row.querySelector("input[name='Room Name']").value;
+  // newFields.querySelector("input[name='Room Name']").value = roomName;
+  row.parentNode.insertBefore(newFields, row.nextSibling);
+}
+
+function newFloor(row) {
+  var newFields = document.getElementById('readroot').cloneNode(true);
+  newFields.id = '';
+  // var floorName = row.querySelector("input[name='Floor Name']").value;
+  // newFields.querySelector("input[name='Floor Name']").value = floorName;
+  // var roomName = row.querySelector("input[name='Room Name']").value;
+  // newFields.querySelector("input[name='Room Name']").value = roomName;
+  row.parentNode.insertBefore(newFields, row.nextSibling);
+}
+
+function newProduct(row) {
+  var newFields = document.getElementById('readroot').cloneNode(true);
+  newFields.id = '';
+  var floorName = row.querySelector("input[name='Floor Name']").value;
+  newFields.querySelector("input[name='Floor Name']").value = floorName;
+  var roomName = row.querySelector("input[name='Room Name']").value;
+  newFields.querySelector("input[name='Room Name']").value = roomName;
+  row.parentNode.insertBefore(newFields, row.nextSibling);
+}
+
+
+
+function newBody(ob) {
+var newFields = document.getElementById('newBody').cloneNode(true);
+// newFields.style.display="block";
+newFields.id = '';
+// alert(newFields.firstChild.id);
+// newFields.firstChild.id = '';
+// var insertHere = document.getElementById('writeroot');
+var floorName = ob.parentNode.parentNode.parentNode.querySelector("input[name='Floor Name']").value;
+// alert(floorName);
+newFields.querySelector("input[name='Floor Name']").value = floorName;
+// alert(ob.parentNode.parentNode.parentNode.id)
+ob.parentNode.parentNode.parentNode.parentNode.appendChild(newFields);
+}
+
+</script>
+{% endblock %}

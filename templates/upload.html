@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<h2>Upload a file</h2>
+  <form action="/upload_file" method="post" enctype=multipart/form-data>
+    <input type="file" name="file" >
+    <input type="text" name="name" value="">
+    <input type="submit" name="Submit" value="Upload">
+  </form>
+  <br>
+<h2>Load a checkpoint</h2>
+  <form action="/load_checkpoint" method="post">
+    <select name="name">
+      {% for name in allFiles %}
+        <option value={{name}}>{{name}}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" name="Submit" value="Load">
+  </form>
+<br>
+
+<h2>Break Into Sentences</h2>
+  <form action="/break" method="post">
+    <input type="submit" name="Submit" value="Break">
+  </form>
+<h2>Remove Stopwords</h2>
+  <form action="/stopwords" method="post">
+    <input type="submit" name="Submit" value="Remove Stopwords">
+  </form>
+
+<br>
+<h2>Create a checkpoint</h2>
+    <form action="/create_checkpoint" method="post">
+      <input type="text" name="name" value="Enter Name of the checkpoint">
+      <input type="submit" name="Submit" value="Create">
+    </form>
+  <br>
+
+{% endblock %}
