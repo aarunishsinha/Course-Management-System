@@ -1,8 +1,8 @@
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for
 import os
-import nltk
+# import nltk
 import numpy as np
-import pandas as pd
+# import pandas as pd
 
 
 app = Flask(__name__)
@@ -24,8 +24,9 @@ def main():
 
 @app.route("/instructorScreen", methods = ["POST"])
 def inst():
+    global currentProfLoginId
     currentProfLoginId = request.form.get("ProfID")
-    return render_template("instructor.html",AddCourseMsg="", requests = [])
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [])
 
 @app.route("/instructorScreen/AddCourse", methods = ["POST"])
 def instAC():
@@ -40,7 +41,7 @@ def instAC():
 
     # EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",AddCourseMsg="", requests = [])
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [])
 
 @app.route("/instructorScreen/Requests", methods = ["POST"])
 def instRequests():
@@ -51,7 +52,7 @@ def instRequests():
 
     # requests = EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",AddCourseMsg="", requests = requests)
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [])
 
 @app.route("/instructorScreen/ProcessRequests", methods = ["POST"])
 def instProcessRequests():
@@ -62,8 +63,29 @@ def instProcessRequests():
 
     # requests = EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",AddCourseMsg="", requests = [])
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [])
 
+@app.route("/instructorScreen/Schedule", methods = ["POST"])
+def instSchedule():
+    # See what is to be done with AddCourseMsg
+    global currentProfLoginId
+    TC = request.form.get("TC")
+    schedule = []
+
+    # schedule = EXECUTE DATABASE QUERY HERE
+    #  Will make schedule.html once query is executed and exact form is known
+    return render_template("schedule.html",currentProfLoginId = currentProfLoginId,schedule = schedule)
+
+@app.route("/instructorScreen/enrollment", methods = ["POST"])
+def instEnrollments():
+    # See what is to be done with AddCourseMsg
+    global currentProfLoginId
+    COID = request.form.get("COID")
+    enrollment = ['Aniket','Aarunish','Jai']
+
+    # enrollment = EXECUTE DATABASE QUERY HERE
+
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment)
 
 
 if __name__ == '__main__':
