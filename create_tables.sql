@@ -15,8 +15,7 @@ create table course_offerings(
 	course_uuid text not null,
 	term_code int not null,
 	name text ,
-	reg_limit int,
-	room_required boolean,
+	
 	constraint course_offerings_key primary key (uuid),
 	constraint course_uuid_ref foreign key (course_uuid) references courses(uuid),
 	constraint term_code_ref foreign key (term_code) references term_code(code)
@@ -52,6 +51,7 @@ create table sections(
 	num int,
 	room_uuid text,
 	schedule_uuid text,
+	reg_limit int,
 	constraint sections_key primary key (uuid),
 	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid),
 	constraint schedule_uuid_ref foreign key (schedule_uuid) references schedules(uuid)
@@ -132,7 +132,7 @@ create table addDrop(
 -- \copy instructors from 'database/instructors.csv' delimiter ',' csv header;
 -- \copy rooms from 'database/rooms.csv' delimiter ',' csv header;
 -- \copy schedules from 'database/schedules.csv' delimiter ',' csv header;
--- \copy sections from 'database/sections.csv' delimiter ',' csv header;
+\copy sections from 'database/sections.csv' delimiter ',' csv header;
 -- \copy subjects from 'database/subjects.csv' delimiter ',' csv header;
 -- \copy subject_memberships from 'database/subject_memberships.csv' delimiter ',' csv header;
--- \copy teachings from 'database/teachings.csv' delimiter ',' csv header;
+\copy teachings from 'database/teachings.csv' delimiter ',' csv header;

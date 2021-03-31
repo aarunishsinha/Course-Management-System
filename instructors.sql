@@ -36,12 +36,11 @@ create or replace function get_pending_requests(
 	CO text) 
 	returns table
 	(
-		course_offering text, 
 		student_id bigint
 	) as $$
 begin
 
-	return query select * from pending_requests where course_offering=CO;
+	return query select student_id from pending_requests where course_offering=CO;
 end $$ LANGUAGE plpgsql;
 
 create or replace function process_pending_request(
