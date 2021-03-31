@@ -1,3 +1,13 @@
+create materialized view disjoint_schedule as
+	select column1  as schedule_uuid from 
+	(values 
+			('875542a2-f786-34dd-933b-84a8af1aaaba'), 
+			('f41f1e4d-cb4f-3ded-b4b0-4a7c4da044e5'),
+			('46da55a4-17f7-31a1-9492-fddb5af9cf13'),
+			('8c7cd81e-4f81-357c-a40b-43f954484804'),
+			('76c82895-6420-3a2c-bb27-5b19b2e07755'),
+			('d81c681b-958c-3b19-ace7-9f24939251c2') ) as t;
+
 -- 1-add course offering
 create or replace function add_course_offering(
 	CID text, 			--course id
@@ -6,7 +16,8 @@ create or replace function add_course_offering(
 	LIM int,			--course reg limit
 	ROOM_REQ boolean,	--room required or not
 	ST text, 			--section type
-	INSTRUCTOR bigint
+	INSTRUCTOR bigint, 
+	subj_code text		--subject code (dept) that is floating the course.
 	) 
 returns void as $$
 DECLARE 
@@ -14,10 +25,20 @@ DECLARE
 	SECTION_ID text :='new'|| (cast ( SN as text)) || COID;
 begin
 
-	insert into course_offerings values (COID, CID, TC,/*course name*/(select courses.name from courses where courses.uuid=CID), LIM, ROOM_REQ);
-	insert into sections values (SECTION_ID, COID, ST, SN, /*room id*/NULL, /*schedule uuid*/NULL);
-	insert into teachings values (INSTRUCTOR,SECTION_ID);
+	insert into course_offerings values (COID, CID, TC,/*course name*/(select courses.name from courses where courses.uuid=CID));
 
+	with t as --find a room and schedule for this course
+	(select rooms.uuid as room_uuid, schedule_uuid from rooms, disjoint_schedule except (select room_uuid,schedule_uuid from sections, course_offerings where course_offerings.term_code=1214 and sections.course_offering_uuid=course_offerings.uuid) limit 1)
+	insert into sections values (SECTION_ID, COID, ST, SN, t.room_uuid /*room id*/, /*schedule uuid*/t.schedule_uuid, LIM);
+	if(not ROOM_REQ)
+	then 
+		update sections set room_uuid=NULL where sections.uuid=SECTION_ID;
+	end if;
+
+	insert into teachings values (INSTRUCTOR,SECTION_ID);
+	insert into subject_membership values (subj_code,COID);
+
+	
 end $$ LANGUAGE plpgsql;
 
 -- start transaction;
