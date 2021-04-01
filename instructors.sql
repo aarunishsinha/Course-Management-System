@@ -1,7 +1,7 @@
 create materialized view disjoint_schedule as
-	select column1  as schedule_uuid from 
-	(values 
-			('875542a2-f786-34dd-933b-84a8af1aaaba'), 
+	select column1  as schedule_uuid from
+	(values
+			('875542a2-f786-34dd-933b-84a8af1aaaba'),
 			('f41f1e4d-cb4f-3ded-b4b0-4a7c4da044e5'),
 			('46da55a4-17f7-31a1-9492-fddb5af9cf13'),
 			('8c7cd81e-4f81-357c-a40b-43f954484804'),
@@ -16,11 +16,11 @@ create or replace function add_course_offering(
 	LIM int,			--course reg limit
 	ROOM_REQ boolean,	--room required or not
 	ST text, 			--section type
-	INSTRUCTOR bigint, 
+	INSTRUCTOR bigint,
 	subj_code text		--subject code (dept) that is floating the course.
-	) 
+	)
 returns void as $$
-DECLARE 
+DECLARE
 	COID text :='new' || (cast (TC as text)) || CID ;	--course offering id
 	SECTION_ID text :='new'|| (cast ( SN as text)) || COID;
 begin
@@ -29,16 +29,16 @@ begin
 
 	with t as --find a room and schedule for this course
 	(select rooms.uuid as room_uuid, schedule_uuid from rooms, disjoint_schedule except (select room_uuid,schedule_uuid from sections, course_offerings where course_offerings.term_code=1214 and sections.course_offering_uuid=course_offerings.uuid) limit 1)
-	insert into sections values (SECTION_ID, COID, ST, SN, t.room_uuid /*room id*/, /*schedule uuid*/t.schedule_uuid, LIM);
+	insert into sections select SECTION_ID, COID, ST, SN, t.room_uuid /*room id*/, /*schedule uuid*/t.schedule_uuid, LIM from t;
 	if(not ROOM_REQ)
-	then 
+	then
 		update sections set room_uuid=NULL where sections.uuid=SECTION_ID;
 	end if;
 
 	insert into teachings values (INSTRUCTOR,SECTION_ID);
-	insert into subject_membership values (subj_code,COID);
+	insert into subject_memberships values (subj_code,COID);
 
-	
+
 end $$ LANGUAGE plpgsql;
 
 -- start transaction;
@@ -54,7 +54,7 @@ student id
 accept or reject via variable ACCEPTED
 */
 create or replace function get_pending_requests(
-	CO text) 
+	CO text)
 	returns table
 	(
 		student_id bigint
@@ -68,7 +68,7 @@ create or replace function process_pending_request(
 	CO text,
 	ACCEPTED boolean,
 	SID text)
-returns void as $$	
+returns void as $$
 begin
 	IF (ACCEPTED)
 	then
@@ -85,7 +85,7 @@ end $$ LANGUAGE plpgsql;
 /*-----------------------------------------------------------------------------*/
 
 -- #3-instructor schedule
--- #assuming the term code would be given to us and schedule for only one term code would be required 
+-- #assuming the term code would be given to us and schedule for only one term code would be required
 /*
 input
 instructor id
@@ -105,7 +105,7 @@ returns table (
 	thurs boolean,
 	fri boolean,
 	sat boolean,
-	sun boolean ) 
+	sun boolean )
 	as $$
 begin
 	return query
@@ -113,15 +113,15 @@ begin
 		select course_offered_name,start_time,end_time,mon,tues,wed,thurs,fri,sat,sun from schedules,
 		(
 			-- #select the schedule ids corresponding to the instructor in that term
-			select  course_offered_name, schedule_uuid from 
+			select  course_offered_name, schedule_uuid from
 			(--select the sections of the particular instructor
 				select section_uuid from teachings where instructor_id=INSTRUCTOR
 			) as tI,
 			(--select the section entries of all the course offering in a given term
-				select sections.uuid, course_offered_name, schedule_uuid from sections, 
+				select sections.uuid, course_offered_name, schedule_uuid from sections,
 				(
 					-- #select the course offerings of a particular term.
-					select uuid, name as course_offered_name from course_offerings where course_offerings.term_code=TERM_CODE 
+					select uuid, name as course_offered_name from course_offerings where course_offerings.term_code=TERM_CODE
 				) as tCO where sections.course_offering_uuid=tCO.uuid
 			) as tS where tI.section_uuid=tS.uuid
 		) as tIS where tIS.schedule_uuid=schedules.uuid
@@ -166,7 +166,7 @@ create or replace function set_grade_distribution(
 	)
 returns void as $$
 begin
--- update table 
+-- update table
 	delete from grade_distributions where grade_distributions.course_offering_uuid=course_offering_uuid and grade_distributions.section_number=section_number;
 	insert into grade_distributions values(
 	course_offering_uuid,
@@ -186,7 +186,7 @@ begin
 	i_count,
 	nw_count,
 	nr_count,
-	other_count 
+	other_count
 	);
 end $$ LANGUAGE plpgsql;
 
@@ -215,7 +215,7 @@ returns table(
 	other_count int
 	)	as $$
 begin
-	return query 
+	return query
 	(
 		select * from grade_distributions where grade_distributions.course_offering_uuid=course_offering_id and grade_distributions.section_number=section_num
 	);
@@ -224,12 +224,12 @@ end $$ LANGUAGE plpgsql;
 create or replace function get_num_students_reg(
 	course_offering_uuid text)
 returns int as $$
-begin 
+begin
 	-- select reg_limit from course_offerings where course_offerings.course_offering_uuid=course_offering_uuid;
-	select count(*) from 
+	select count(*) from
 	(
 		select student_id from course_registrations where course_registrations.course_offering_uuid=course_offering_uuid) as t ;
-end $$ LANGUAGE plpgsql; 
+end $$ LANGUAGE plpgsql;
 /*-----------------------------------------------------------------------------*/
 
 --6 get a room
@@ -237,7 +237,7 @@ create or replace function get_room_instr(
 	course_offering_uuid text,
 	section_number int)
 returns table(
-	facility_code text, 
+	facility_code text,
 	room_code text) as $$
 begin
 	select facility_code, room_code from rooms,
@@ -245,5 +245,5 @@ begin
 		select room_uuid from sections where sections.course_offering_uuid=course_offering_uuid and sections.num=section_number
 	) as t1
 	where rooms.room_uuid=t1.room_uuid;
-end $$ LANGUAGE plpgsql;	
+end $$ LANGUAGE plpgsql;
 /*-----------------------------------------------------------------------------*/
