@@ -1,5 +1,5 @@
 --query to set the register limit from grade distribution. already done
--- with t as 
+-- with t as
 -- (select course_offering_uuid, section_number, (COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count)) as lim from grade_distributions as gd)
 --  update sections set reg_limit= lim  from t where sections.course_offering_uuid=t.course_offering_uuid and sections.num=t.section_number;
 
@@ -11,7 +11,7 @@ SELECT i.id as instructor_id,
 		co.uuid as course_offering_uuid,
 		co.term_code as course_offering_term,
 		s.num as section_number
-FROM ((((instructors i 
+FROM ((((instructors i
 	join teachings t on (i.id=t.instructor_id))
 	join sections s on (t.section_uuid=s.uuid))
 	join course_offerings co on (s.course_offering_uuid=co.uuid))
@@ -19,39 +19,39 @@ FROM ((((instructors i
 
 CREATE MATERIALIZED VIEW schedule_room AS
 (
-	select * from 
-	(	
-		SELECT distinct course_offering_uuid, 
-		sections.num as section_number, 
+	select * from
+	(
+		SELECT distinct course_offering_uuid,
+		sections.num as section_number,
 		facility_code,room_code,--room data
 		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
-		FROM sections, schedules, rooms 
+		FROM sections, schedules, rooms
 		where
 		-- join constraints on rooms
-		sections.room_uuid=rooms.uuid and sections.room_uuid is not NULL 
+		sections.room_uuid=rooms.uuid and sections.room_uuid is not NULL
 		--join constraints on schedule
 		and sections.schedule_uuid=schedules.uuid
 	) as t1
 	union
 	(
-		SELECT distinct course_offering_uuid, 
-		sections.num as section_number, 
+		SELECT distinct course_offering_uuid,
+		sections.num as section_number,
 		NULL as facility_code, null as room_code,--room data
 		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
-		FROM sections, schedules 
+		FROM sections, schedules
 		where
 		-- join constraints on room
-		 sections.room_uuid is NULL 
+		 sections.room_uuid is NULL
 		--join constraints on schedule
 		and sections.schedule_uuid=schedules.uuid
-	) 
+	)
 );
 /*-----------------------------------------------------------------------------*/
 
 --show the grade distribution percentage wise
 create MATERIALIZED view grade_distribution_percentages AS
 (
-	SELECT t.course_offering_uuid, t.section_number, 
+	SELECT t.course_offering_uuid, t.section_number,
 	(cast (a_count as float)/t.total*100)::numeric(10,2) as a_count_p,
 	(cast (ab_count as float)/t.total*100)::numeric(10,2) as ab_count_p,
 	(cast (b_count as float)/t.total*100)::numeric(10,2) as b_count_p,
@@ -70,11 +70,11 @@ create MATERIALIZED view grade_distribution_percentages AS
 	(cast (other_count as float)/t.total*100)::numeric(10,2) as other_count_p
   from
 	(
-		SELECT course_offering_uuid,section_number, cast 
+		SELECT course_offering_uuid,section_number, cast
 		(
 			(COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count)) as float
-		) as total from grade_distributions as gd 
-	) 
+		) as total from grade_distributions as gd
+	)
 	as t, grade_distributions where t.course_offering_uuid=grade_distributions.course_offering_uuid and t.section_number=grade_distributions.section_number and t.total!=0
 );
 /*-----------------------------------------------------------------------------*/
@@ -83,7 +83,7 @@ create MATERIALIZED view grade_distribution_percentages AS
 create or replace function search_course(
 	CNAME text, 			--course id
 	TC int 				--term_code
-	) 
+	)
 returns table (
 	course_offering_uuid text,
 	section_number int,
@@ -101,28 +101,28 @@ returns table (
 	thurs boolean ,
 	fri boolean ,
 	sat boolean ,
-	sun boolean ) 
+	sun boolean )
 	as $$
-DECLARE 
+DECLARE
 	CNAME text :='%' || CNAME || '%' ;
 begin
 	return query
-	
+
 	(
-		SELECT course_offering_uuid, t1.section_number, course_name, reg_limit as course_limit, instructors, 
-		concat_ws('-',subjects.code,subjects.abbreviation) as department_data, 
+		SELECT course_offering_uuid, t1.section_number, course_name, reg_limit as course_limit, instructors,
+		concat_ws('-',subjects.code,subjects.abbreviation) as department_data,
 		facility_code,room_code,--room data
 		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
 		from
 	 	(
-	 		SELECT string_agg(t.instructor_name::text, ',') as instructors, course_name, course_offering_uuid, section_number 
+	 		SELECT string_agg(instructor_course.instructor_name::text, ',') as instructors, course_name, course_offering_uuid, section_number 
 	 		from instructor_course where instructor_course.course_name ilike CNAME and instructor_course.course_offering_term=TC
 	 		GROUP by course_name, course_offering_uuid, section_number
-	 		
+
 	 	) as t1,
 	 	sections, subject_memberships, schedule_room
 	 	--join constraints on sections
-	 	where t1.section_number=sections.num and t1.course_offering_uuid=sections.course_offering_uuid 
+	 	where t1.section_number=sections.num and t1.course_offering_uuid=sections.course_offering_uuid
 	 	--join constraints on subject_memberships
 	 	and t1.course_offering_uuid=subject_memberships.course_offering_uuid
 	 	--join constraints on schedule_room
@@ -138,7 +138,7 @@ end $$ LANGUAGE plpgsql;
 --5-PastCourseStats--
 create or replace function past_course_stats(
 	CNAME text 			--course id
-	) 
+	)
 returns table (
 	course_name text,
 	a_percent numeric(10,2),
@@ -156,10 +156,10 @@ returns table (
 	i_percent numeric(10,2),
 	nw_percent numeric(10,2),
 	nr_percent numeric(10,2),
-	other_percent numeric(10,2)) 
+	other_percent numeric(10,2))
 	as $$
-DECLARE 
-	CNAME text :='%' || CNAME || '%' ;	
+DECLARE
+	CNAME text :='%' || CNAME || '%' ;
 begin
 	return query
 	(SELECT courses.course_name,
@@ -178,11 +178,11 @@ begin
 		AVG(grade_distribution_percentages.i_count_p)::numeric(10,2) as i_count_p,
 		AVG(grade_distribution_percentages.nw_count_p)::numeric(10,2) as nw_count_p,
 		AVG(grade_distribution_percentages.nr_count_p)::numeric(10,2) as nr_count_p,
-		AVG(grade_distribution_percentages.other_count_p)::numeric(10,2) as other_count_p 
-		FROM 
+		AVG(grade_distribution_percentages.other_count_p)::numeric(10,2) as other_count_p
+		FROM
 		(
-			select uuid, name as course_name from  courses where courses.name ilike CNAME 
-		) as courses , course_offerings,grade_distribution_percentages WHERE 
+			select uuid, name as course_name from  courses where courses.name ilike CNAME
+		) as courses , course_offerings,grade_distribution_percentages WHERE
 		--join condition for courses
 		courses.uuid=course_offerings.course_uuid and
 		--join condition for grade_distribution_percentages
@@ -246,7 +246,7 @@ return query
 	from
 	(
 		select course_offering, course_registrations.section_number from course_registrations where course_registrations.student_id=SID
-	) 
+	)
 	as t, courses, course_offerings, schedule_room
 	where t.course_offering=schedule_room.course_offering_uuid and t.section_number=schedule_room.section_number
 	and t.course_offering=course_offerings.uuid

@@ -2,7 +2,7 @@ from flask import Flask, render_template, send_from_directory, request, redirect
 import os
 import psycopg2
 # import nltk
-import numpy as np
+# import numpy as np
 # import pandas as pd
 
 conn = psycopg2.connect('dbname=postgres')
