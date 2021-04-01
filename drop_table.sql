@@ -12,4 +12,4 @@ drop table term_code cascade;
 drop table pending_requests cascade;
 drop table rejected_requests cascade;
 drop table addDrop cascade;
-drop table course_registration cascade;
+drop table course_registrations cascade;
