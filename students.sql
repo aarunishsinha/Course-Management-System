@@ -1,19 +1,7 @@
-with t as (select course_offering_uuid, section_number, (COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count)) as lim from grade_distributions as gd)
- update sections set reg_limit= lim  from t where sections.course_offering_uuid=t.course_offering_uuid and sections.num=t.section_number;
-
-
--- CREATE MATERIALIZED VIEW course_limits AS
--- SELECT c.uuid as course_uuid,
--- 		c.name as course_name,
--- 		c.num as course_number,
--- 		(MAX(COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count))) as course_limit,
--- 		co.term_code as course_offering_term,
--- 		gd.section_number as section_number
--- FROM ((grade_distributions gd 
--- 	join course_offerings co on (gd.course_offering_uuid=co.uuid))
--- 	join courses c on (co.course_uuid=c.uuid))
--- GROUP BY (co.uuid,gd.section_number,c.uuid,c.name,c.num,co.term_code)
--- ORDER BY c.num;
+--query to set the register limit from grade distribution. already done
+-- with t as 
+-- (select course_offering_uuid, section_number, (COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count)) as lim from grade_distributions as gd)
+--  update sections set reg_limit= lim  from t where sections.course_offering_uuid=t.course_offering_uuid and sections.num=t.section_number;
 
 CREATE MATERIALIZED VIEW instructor_course AS
 SELECT i.id as instructor_id,
@@ -30,9 +18,16 @@ FROM ((((instructors i
 	join courses c on (co.course_uuid=c.uuid));
 
 CREATE MATERIALIZED VIEW schedule_room AS
-SELECT co.uuid as course_offering_uuid
-FROM (course_offerings co
-	join sections)
+	SELECT distinct course_offering_uuid, 
+	sections.num as section_number, 
+	facility_code,room_code,--room data
+	start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
+	FROM sections, schedules, rooms 
+	where
+	-- join constraints on rooms
+	sections.room_uuid=rooms.uuid
+	--join constraints on schedule
+	and sections.schedule_uuid=schedules.uuid;
 
 --1-SearchCourse--
 create or replace function search_course(
@@ -40,21 +35,49 @@ create or replace function search_course(
 	TC int 				--term_code
 	) 
 returns table (
-	course_number int,
+	course_offering_uuid text,
+	section_number int,
 	course_name text,
 	course_limit int,
 	instructors text,
-	section_number int,
 	department_data text,
-	course_offering_uuid text) 
+	facility_code text,
+	room_code text,
+	start_time int ,
+	end_time int ,
+	mon boolean ,
+	tues boolean ,
+	wed boolean ,
+	thurs boolean ,
+	fri boolean ,
+	sat boolean ,
+	sun boolean ) 
 	as $$
 DECLARE 
 	CNAME text :=CNAME || '%' ;
 begin
 	return query
-	(SELECT g.course_number as course_number,g.course_name as course_name,g.course_limit as course_limit,g.instructors as instructors,g.section_number as section_number,concat_ws('-',subjects.code,subjects.abbreviation) as department_data,g.course_offering_uuid as course_offering_uuid FROM (SELECT f.course_number,f.course_name,f.course_limit,string_agg(t.instructor_name::text, ',') as instructors,f.section_number,t.course_offering_uuid FROM (SELECT * FROM course_limits WHERE course_limits.course_offering_term=TC)f,(SELECT * FROM instructor_course WHERE instructor_course.course_offering_term=TC)t WHERE t.course_uuid=f.course_uuid and t.course_offering_term=f.course_offering_term and f.section_number=t.section_number
-	GROUP BY f.course_uuid,f.section_number,f.course_name,f.course_limit,f.course_number,t.course_offering_uuid)g,subjects,subject_memberships WHERE g.course_name ilike CNAME AND subject_memberships.course_offering_uuid=g.course_offering_uuid AND subjects.code=subject_memberships.subject_code ORDER BY g.course_number,g.section_number
-	);
+	
+	(
+		SELECT course_offering_uuid, t1.section_number, course_name, reg_limit as course_limit, instructors, 
+		concat_ws('-',subjects.code,subjects.abbreviation) as department_data, 
+		facility_code,room_code,--room data
+		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
+		from
+	 	(
+	 		SELECT string_agg(t.instructor_name::text, ',') as instructors, course_name, course_offering_uuid, section_number 
+	 		from instructor_course where instructor_course.course_name ilike CNAME and instructor_course.course_offering_term=TC
+	 		GROUP by course_name, course_offering_uuid, section_number
+	 		
+	 	) as t1,
+	 	sections, subject_memberships, schedule_room
+	 	--join constraints on sections
+	 	where t1.section_number=sections.num and t1.course_offering_uuid=sections.course_offering_uuid 
+	 	--join constraints on subject_memberships
+	 	and t1.course_offering_uuid=subject_memberships.course_offering_uuid
+	 	--join constraints on schedule_room
+	 	and sections.course_offering_uuid=schedule_room.course_offering_uuid and sections.num=schedule_room.section_number
+	) ;
 end $$ LANGUAGE plpgsql;
 
 --EXAMPLE--
