@@ -51,3 +51,11 @@ fri boolean               ---
 sat boolean               ---
 sun boolean               ---   
 ```
+5. get_student_list
+```
+INPUT:
+CO text                   --- course_offering_uuid
+SECN int                  --- section_number
+
+OUTPUT:
+student_id bigint         --- student_id
