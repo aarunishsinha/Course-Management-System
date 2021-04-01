@@ -18,7 +18,7 @@ FROM ((((instructors i
 	join courses c on (co.course_uuid=c.uuid));
 
 CREATE MATERIALIZED VIEW schedule_room AS
-	SELECT distinct course_offering_uuid, 
+(	SELECT distinct course_offering_uuid, 
 	sections.num as section_number, 
 	facility_code,room_code,--room data
 	start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
@@ -27,8 +27,37 @@ CREATE MATERIALIZED VIEW schedule_room AS
 	-- join constraints on rooms
 	sections.room_uuid=rooms.uuid
 	--join constraints on schedule
-	and sections.schedule_uuid=schedules.uuid;
+	and sections.schedule_uuid=schedules.uuid);
 
+--show the grade distribution percentage wise
+create MATERIALIZED view grade_distribution_percentages AS
+(
+	SELECT t.course_offering_uuid, t.section_number, 
+	(cast (a_count as float)/t.total*100)::numeric(10,2) as a_count_p,
+	(cast (ab_count as float)/t.total*100)::numeric(10,2) as ab_count_p,
+	(cast (b_count as float)/t.total*100)::numeric(10,2) as b_count_p,
+	(cast (bc_count as float)/t.total*100)::numeric(10,2) as bc_count_p,
+	(cast (c_count as float)/t.total*100)::numeric(10,2) as c_count_p,
+	(cast (d_count as float)/t.total*100)::numeric(10,2) as d_count_p,
+	(cast (f_count as float)/t.total*100)::numeric(10,2) as f_count_p,
+	(cast (s_count as float)/t.total*100)::numeric(10,2) as s_count_p,
+	(cast (u_count as float)/t.total*100)::numeric(10,2) as u_count_p,
+	(cast (cr_count as float)/t.total*100)::numeric(10,2) as cr_count_p,
+	(cast (n_count as float)/t.total*100)::numeric(10,2) as n_count_p,
+	(cast (p_count as float)/t.total*100)::numeric(10,2) as p_count_p,
+	(cast (i_count as float)/t.total*100)::numeric(10,2) as i_count_p,
+	(cast (nw_count as float)/t.total*100)::numeric(10,2) as nw_count_p,
+	(cast (nr_count as float)/t.total*100)::numeric(10,2) as nr_count_p,
+	(cast (other_count as float)/t.total*100)::numeric(10,2) as other_count_p
+  from
+	(
+		SELECT course_offering_uuid,section_number, cast 
+		(
+			(COALESCE(gd.a_count,0) + COALESCE(gd.ab_count,0) + COALESCE(gd.b_count,0) + COALESCE(gd.bc_count,0) + COALESCE(gd.c_count,0) + COALESCE(gd.d_count,0) + COALESCE(gd.f_count,0) + COALESCE(gd.s_count,0) + COALESCE(gd.u_count,0) + COALESCE(gd.cr_count,0) + COALESCE(gd.n_count,0) + COALESCE(gd.p_count,0) + COALESCE(gd.i_count,0) + COALESCE(gd.nw_count,0) + COALESCE(gd.nr_count,0) + COALESCE(gd.other_count)) as float
+		) as total from grade_distributions as gd 
+	) 
+	as t, grade_distributions where t.course_offering_uuid=grade_distributions.course_offering_uuid and t.section_number=grade_distributions.section_number and t.total!=0
+);
 --1-SearchCourse--
 create or replace function search_course(
 	CNAME text, 			--course id
@@ -54,7 +83,7 @@ returns table (
 	sun boolean ) 
 	as $$
 DECLARE 
-	CNAME text :=CNAME || '%' ;
+	CNAME text :='%' || CNAME || '%' ;
 begin
 	return query
 	
@@ -90,31 +119,56 @@ create or replace function past_course_stats(
 	) 
 returns table (
 	course_name text,
-	course_limit int,
-	a_count numeric(10,2),
-	ab_count numeric(10,2),
-	b_count numeric(10,2),
-	bc_count numeric(10,2),
-	c_count numeric(10,2),
-	d_count numeric(10,2),
-	f_count numeric(10,2),
-	s_count numeric(10,2),
-	u_count numeric(10,2),
-	cr_count numeric(10,2),
-	n_count numeric(10,2),
-	p_count numeric(10,2),
-	i_count numeric(10,2),
-	nw_count numeric(10,2),
-	nr_count numeric(10,2),
-	other_count numeric(10,2)) 
+	a_percent numeric(10,2),
+	ab_percent numeric(10,2),
+	b_percent numeric(10,2),
+	bc_percent numeric(10,2),
+	c_percent numeric(10,2),
+	d_percent numeric(10,2),
+	f_percent numeric(10,2),
+	s_percent numeric(10,2),
+	u_percent numeric(10,2),
+	cr_percent numeric(10,2),
+	n_percent numeric(10,2),
+	p_percent numeric(10,2),
+	i_percent numeric(10,2),
+	nw_percent numeric(10,2),
+	nr_percent numeric(10,2),
+	other_percent numeric(10,2)) 
 	as $$
 DECLARE 
-	CNAME text :=CNAME || '%' ;	
+	CNAME text :='%' || CNAME || '%' ;	
 begin
 	return query
-	(SELECT t.course_name as course_name,MAX(t.course_limit) as course_limit,AVG(grade_distributions.a_count)::numeric(10,2) as a_count,AVG(grade_distributions.ab_count)::numeric(10,2) as ab_count,AVG(grade_distributions.b_count)::numeric(10,2) as b_count,AVG(grade_distributions.bc_count)::numeric(10,2) as bc_count,AVG(grade_distributions.c_count)::numeric(10,2) as c_count,AVG(grade_distributions.d_count)::numeric(10,2) as d_count,AVG(grade_distributions.f_count)::numeric(10,2) as f_count,AVG(grade_distributions.s_count)::numeric(10,2) as s_count,AVG(grade_distributions.u_count)::numeric(10,2) as u_count,AVG(grade_distributions.cr_count)::numeric(10,2) as cr_count,AVG(grade_distributions.n_count)::numeric(10,2) as n_count,AVG(grade_distributions.p_count)::numeric(10,2) as p_count,AVG(grade_distributions.i_count)::numeric(10,2) as i_count,AVG(grade_distributions.nw_count)::numeric(10,2) as nw_count,AVG(grade_distributions.nr_count)::numeric(10,2) as nr_count,AVG(grade_distributions.other_count)::numeric(10,2) as other_count FROM (SELECT course_uuid,course_limits.course_name,course_offering_term,course_limits.course_limit from course_limits where course_limits.course_name ilike CNAME)t,course_offerings,grade_distributions WHERE t.course_uuid=course_offerings.course_uuid AND t.course_offering_term=course_offerings.term_code AND course_offerings.uuid=grade_distributions.course_offering_uuid GROUP BY t.course_uuid,t.course_name
+	(SELECT courses.course_name,
+		AVG(grade_distribution_percentages.a_count_p)::numeric(10,2) as a_count_p,
+		AVG(grade_distribution_percentages.ab_count_p)::numeric(10,2) as ab_count_p,
+		AVG(grade_distribution_percentages.b_count_p)::numeric(10,2) as b_count_p,
+		AVG(grade_distribution_percentages.bc_count_p)::numeric(10,2) as bc_count_p,
+		AVG(grade_distribution_percentages.c_count_p)::numeric(10,2) as c_count_p,
+		AVG(grade_distribution_percentages.d_count_p)::numeric(10,2) as d_count_p,
+		AVG(grade_distribution_percentages.f_count_p)::numeric(10,2) as f_count_p,
+		AVG(grade_distribution_percentages.s_count_p)::numeric(10,2) as s_count_p,
+		AVG(grade_distribution_percentages.u_count_p)::numeric(10,2) as u_count_p,
+		AVG(grade_distribution_percentages.cr_count_p)::numeric(10,2) as cr_count_p,
+		AVG(grade_distribution_percentages.n_count_p)::numeric(10,2) as n_count_p,
+		AVG(grade_distribution_percentages.p_count_p)::numeric(10,2) as p_count_p,
+		AVG(grade_distribution_percentages.i_count_p)::numeric(10,2) as i_count_p,
+		AVG(grade_distribution_percentages.nw_count_p)::numeric(10,2) as nw_count_p,
+		AVG(grade_distribution_percentages.nr_count_p)::numeric(10,2) as nr_count_p,
+		AVG(grade_distribution_percentages.other_count_p)::numeric(10,2) as other_count_p 
+		FROM 
+		(
+			select uuid, name as course_name from  courses where courses.name ilike CNAME 
+		) as courses , course_offerings,grade_distribution_percentages WHERE 
+		--join condition for courses
+		courses.uuid=course_offerings.course_uuid and
+		--join condition for grade_distribution_percentages
+		grade_distribution_percentages.course_offering_uuid=course_offerings.uuid group by courses.course_name
+
+
 	);
 end $$ LANGUAGE plpgsql;
 
 --EXAMPLE--
--- select * FROM past_course_stats('Freshman'); --
+-- select * FROM past_course_stats('database'); --
