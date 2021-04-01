@@ -75,7 +75,8 @@ create table grade_distributions(
 	nw_count int,
 	nr_count int,
 	other_count int,
-	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid)
+	constraint grade_distributions_key primary key (course_offering_uuid,section_number) 
+	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid),
 	);
 create table subjects(
 	code text not null,
@@ -86,12 +87,14 @@ create table subjects(
 create table subject_memberships(
 	subject_code text not null,
 	course_offering_uuid text not null,
+	constraint subject_memberships_key primary key (subject_code,course_offering_uuid),
 	constraint subject_code_ref foreign key (subject_code) references subjects(code),
 	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid)
 	);
 create table teachings(
 	instructor_id bigint not null,
 	section_uuid text not null,
+	constraint teachings_key primary key (instructor_id,section_uuid),
 	constraint instructor_id_ref foreign key (instructor_id) references instructors(id),
 	constraint section_uuid_ref foreign key (section_uuid) references sections(uuid)
 	);
