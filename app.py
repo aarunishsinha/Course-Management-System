@@ -59,7 +59,7 @@ def instRequests():
     global currentProfLoginId
     global COID
     COID = request.form.get("COID")
-    requests = [(0,123),(0,1231),(0,13),(0,144)]
+    requests = [(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144)]
 
 
     # requests = EXECUTE DATABASE QUERY HERE
@@ -166,11 +166,11 @@ def instGetGD():
 @app.route("/instructorScreen/room", methods = ["POST"])
 def instRoom():
     global currentProfLoginId
-    ouput = []
+    output = [('LH121','Narula101')]
     # output = EXECUTE DATABASE QUERY HERE
     room = output[0][0]
     facultyCode = output[0][1]
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = grades, room = room, facultyCode = facultyCode)
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = room, facultyCode = facultyCode)
 
 
 
