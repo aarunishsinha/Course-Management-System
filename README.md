@@ -33,3 +33,21 @@ ACCEPTED boolean          --- if accepted on frontend (button/radio)
 SECN int                  --- section number
 SID bigint                --- student_id
 ```
+4. get_instructor_schedule
+```
+INPUT:
+INSTRUCTOR bigint         --- instructor_id
+TC int                    --- term_code
+
+OUTPUT:
+course_offered_name text  --- course_offering_name
+start_time int            --- start time in minutes of day
+end_time int              --- end time in minutes of day
+mon boolean               --- true is schedule is on monday
+tues boolean              --- true is schedule is on tuesday
+wed boolean               --- and so on....
+thurs boolean             ---
+fri boolean               ---
+sat boolean               ---
+sun boolean               ---   
+```

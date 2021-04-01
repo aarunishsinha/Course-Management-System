@@ -104,7 +104,7 @@ term code
 */
 create or replace function get_instructor_schedule(
 	INSTRUCTOR bigint,
-	TERM_CODE int
+	TC int
 	)
 returns table (
 	course_offered_name text,
@@ -121,37 +121,42 @@ returns table (
 begin
 	return query
 	(
-		select course_offered_name,start_time,end_time,mon,tues,wed,thurs,fri,sat,sun from schedules,
+		select tIS.course_offered_name,schedules.start_time,schedules.end_time,schedules.mon,schedules.tues,schedules.wed,schedules.thurs,schedules.fri,schedules.sat,schedules.sun from schedules,
 		(
 			-- #select the schedule ids corresponding to the instructor in that term
-			select  course_offered_name, schedule_uuid from
+			select  tS.course_offered_name, tS.schedule_uuid from
 			(--select the sections of the particular instructor
-				select section_uuid from teachings where instructor_id=INSTRUCTOR
+				select teachings.section_uuid from teachings where teachings.instructor_id=INSTRUCTOR
 			) as tI,
 			(--select the section entries of all the course offering in a given term
-				select sections.uuid, course_offered_name, schedule_uuid from sections,
+				select sections.uuid, tCO.course_offered_name, sections.schedule_uuid from sections,
 				(
 					-- #select the course offerings of a particular term.
-					select uuid, name as course_offered_name from course_offerings where course_offerings.term_code=TERM_CODE
+					select course_offerings.uuid, course_offerings.name as course_offered_name from course_offerings where course_offerings.term_code=TC
 				) as tCO where sections.course_offering_uuid=tCO.uuid
 			) as tS where tI.section_uuid=tS.uuid
 		) as tIS where tIS.schedule_uuid=schedules.uuid
 	);
 end $$ LANGUAGE plpgsql;
+
+-- select * from get_instructor_schedule(761703,1214); --
 /*-----------------------------------------------------------------------------*/
 
 -- 4 student list of course offering
 create or replace function get_student_list(
-	course_offering text)
+	CO text,
+	SECN int)
 returns table(
 	student_id bigint)
 	as $$
 begin
 	return query
 	(
-		select student_id from course_registrations where course_registrations.course_offering=course_offering
+		select course_registrations.student_id from course_registrations where course_registrations.course_offering=CO and course_registrations.section_number=SECN
 	);
 end $$ LANGUAGE plpgsql;
+
+-- select * from get_student_list('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15',1); --
 /*-----------------------------------------------------------------------------*/
 
 --5 grade distribution
