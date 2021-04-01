@@ -20,7 +20,16 @@ subj_code text            --- subject code(dept that is floating the course)
 ```
 INPUT:
 CO text                   --- course_offering_uuid
+SECN int                  --- section number
 
 OUTPUT:
-student_id bigint           --- student id
+student_id bigint         --- student id
+```
+3. process_pending_request
+```
+INPUT:
+CO text                   --- course_offering_uuid
+ACCEPTED boolean          --- if accepted on frontend (button/radio)
+SECN int                  --- section number
+SID bigint                --- student_id
 ```

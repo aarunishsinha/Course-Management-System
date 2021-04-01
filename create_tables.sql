@@ -101,6 +101,7 @@ create table students(
 );
 create table pending_requests(
 	course_offering text not null,
+	section_number int,
 	student_id bigint not null,
 	constraint pending_requests_key primary key (course_offering,student_id),
 	constraint course_offering_ref foreign key (course_offering) references course_offerings(uuid),

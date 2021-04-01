@@ -54,36 +54,45 @@ student id
 accept or reject via variable ACCEPTED
 */
 create or replace function get_pending_requests(
-	CO text)
+	CO text,
+	SECN int)
 	returns table
 	(
 		student_id bigint
 	) as $$
 begin
 
-	return query select pending_requests.student_id from pending_requests where pending_requests.course_offering=CO;
+	return query select pending_requests.student_id from pending_requests where pending_requests.course_offering=CO AND pending_requests.section_number=SECN;
 end $$ LANGUAGE plpgsql;
 
--- select * from get_pending_requests('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15'); --
+-- insert into students values (12345,'Aniket Modi'); --
+-- insert into students values (12346,'Aarunish Sinha'); --
+-- insert into students values (12347,'Jai Javeria'); --
+-- insert into pending_requests values ('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15',1,12345); --
+-- insert into pending_requests values ('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15',1,12346); --
+-- select * from get_pending_requests('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15',1); --
 
 create or replace function process_pending_request(
 	CO text,
 	ACCEPTED boolean,
-	SID text)
+	SECN int,
+	SID bigint)
 returns void as $$
 begin
 	IF (ACCEPTED)
 	then
 		-- #add the student to the course.
-		insert into course_registrations values (CO,SID);
+		insert into course_registrations values (CO,SECN,SID);
 		-- end
 	else
 		-- #put the student request with reject status
 		insert into rejected_requests values (CO, SID);
 	end if;
 	-- #after this remove student pending request
-	delete from pending_requests where course_offering=CO and student_id=SID;
+	delete from pending_requests where pending_requests.course_offering=CO and pending_requests.student_id=SID and pending_requests.section_number=SECN;
 end $$ LANGUAGE plpgsql;
+
+-- select process_pending_request('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15',true,1,12345); --
 /*-----------------------------------------------------------------------------*/
 
 -- #3-instructor schedule

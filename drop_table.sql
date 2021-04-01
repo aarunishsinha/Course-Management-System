@@ -13,3 +13,4 @@ drop table pending_requests cascade;
 drop table rejected_requests cascade;
 drop table addDrop cascade;
 drop table course_registrations cascade;
+drop table students cascade;
