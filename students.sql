@@ -18,16 +18,35 @@ FROM ((((instructors i
 	join courses c on (co.course_uuid=c.uuid));
 
 CREATE MATERIALIZED VIEW schedule_room AS
-(	SELECT distinct course_offering_uuid, 
-	sections.num as section_number, 
-	facility_code,room_code,--room data
-	start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
-	FROM sections, schedules, rooms 
-	where
-	-- join constraints on rooms
-	sections.room_uuid=rooms.uuid
-	--join constraints on schedule
-	and sections.schedule_uuid=schedules.uuid);
+(
+	select * from 
+	(	
+		SELECT distinct course_offering_uuid, 
+		sections.num as section_number, 
+		facility_code,room_code,--room data
+		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
+		FROM sections, schedules, rooms 
+		where
+		-- join constraints on rooms
+		sections.room_uuid=rooms.uuid and sections.room_uuid is not NULL 
+		--join constraints on schedule
+		and sections.schedule_uuid=schedules.uuid
+	) as t1
+	union
+	(
+		SELECT distinct course_offering_uuid, 
+		sections.num as section_number, 
+		NULL as facility_code, null as room_code,--room data
+		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
+		FROM sections, schedules 
+		where
+		-- join constraints on room
+		 sections.room_uuid is NULL 
+		--join constraints on schedule
+		and sections.schedule_uuid=schedules.uuid
+	) 
+);
+/*-----------------------------------------------------------------------------*/
 
 --show the grade distribution percentage wise
 create MATERIALIZED view grade_distribution_percentages AS
@@ -58,6 +77,8 @@ create MATERIALIZED view grade_distribution_percentages AS
 	) 
 	as t, grade_distributions where t.course_offering_uuid=grade_distributions.course_offering_uuid and t.section_number=grade_distributions.section_number and t.total!=0
 );
+/*-----------------------------------------------------------------------------*/
+
 --1-SearchCourse--
 create or replace function search_course(
 	CNAME text, 			--course id
@@ -112,6 +133,7 @@ end $$ LANGUAGE plpgsql;
 --EXAMPLE--
 -- select * from search_course('Freshman',1082); --
 
+/*-----------------------------------------------------------------------------*/
 
 --5-PastCourseStats--
 create or replace function past_course_stats(
@@ -172,3 +194,65 @@ end $$ LANGUAGE plpgsql;
 
 --EXAMPLE--
 -- select * FROM past_course_stats('database'); --
+
+/*-----------------------------------------------------------------------------*/
+
+--adding a course
+create or replace function add_course(
+	student_id bigint,
+	section_number int,
+	course_offering_uuid text)
+returns void as $$
+begin
+	insert into course_registrations values (course_offering_uuid,section_number, student_id);
+end $$ LANGUAGE plpgsql;
+
+--EXAMPLE--
+	-- select * from add_course()
+/*-----------------------------------------------------------------------------*/
+
+create or replace function drop_course(
+	student_id bigint,
+	course_offering_uuid text)
+returns void as $$
+begin
+	delete from course_registrations where course_registrations.course_offering =course_offering_uuid and course_registrations.student_id= student_id;
+	insert into rejected_requests values (course_offering_uuid, student_id);
+
+end $$ LANGUAGE plpgsql;
+/*-----------------------------------------------------------------------------*/
+create or replace function get_daily_schedule(
+	SID bigint)
+returns table (
+	course_name text,
+	section_number int,
+	facility_code text,
+	room_code text,
+	start_time int ,
+	end_time int ,
+	m boolean ,
+	t boolean ,
+	w boolean ,
+	th boolean ,
+	f boolean ,
+	sa boolean ,
+	su boolean )
+as $$
+begin
+return query
+	select courses.name as course_name, schedule_room.section_number,
+	schedule_room.facility_code, schedule_room.room_code,--room data
+	schedule_room.start_time,schedule_room.end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
+	from
+	(
+		select course_offering, course_registrations.section_number from course_registrations where course_registrations.student_id=SID
+	) 
+	as t, courses, course_offerings, schedule_room
+	where t.course_offering=schedule_room.course_offering_uuid and t.section_number=schedule_room.section_number
+	and t.course_offering=course_offerings.uuid
+	and course_offerings.course_uuid=courses.uuid;
+end $$ LANGUAGE plpgsql;
+
+--EXAMPLE
+-- select * from get_daily_schedule(1);
+/*-----------------------------------------------------------------------------*/

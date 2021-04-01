@@ -115,6 +115,7 @@ create table rejected_requests(
 	);
 create table course_registrations(
 	course_offering text not null,
+	section_number int,
 	student_id bigint not null,
 	constraint course_registrations_key primary key (course_offering,student_id),
 	constraint course_offering_ref foreign key (course_offering) references course_offerings(uuid),
@@ -132,7 +133,7 @@ create table addDrop(
 -- \copy instructors from 'database/instructors.csv' delimiter ',' csv header;
 -- \copy rooms from 'database/rooms.csv' delimiter ',' csv header;
 -- \copy schedules from 'database/schedules.csv' delimiter ',' csv header;
-\copy sections from 'database/sections.csv' delimiter ',' csv header;
+-- \copy sections from 'database/sections_with_limit.csv' delimiter ',' csv header;
 -- \copy subjects from 'database/subjects.csv' delimiter ',' csv header;
 -- \copy subject_memberships from 'database/subject_memberships.csv' delimiter ',' csv header;
-\copy teachings from 'database/teachings.csv' delimiter ',' csv header;
+-- \copy teachings from 'database/teachings.csv' delimiter ',' csv header;
