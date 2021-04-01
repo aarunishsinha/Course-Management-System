@@ -42,7 +42,7 @@ begin
 end $$ LANGUAGE plpgsql;
 
 -- start transaction;
--- select  add_course_offering('e9a360bc-be2d-35d1-9684-a464bbbd0c15',1214,1,150,true,null,761703);
+-- select  add_course_offering('e9a360bc-be2d-35d1-9684-a464bbbd0c15',1214,1,150,true,'LEC',761703,'266');
 -- rollback;
 /*-----------------------------------------------------------------------------*/
 
@@ -61,8 +61,10 @@ create or replace function get_pending_requests(
 	) as $$
 begin
 
-	return query select student_id from pending_requests where pending_requests.course_offering=CO;
+	return query select pending_requests.student_id from pending_requests where pending_requests.course_offering=CO;
 end $$ LANGUAGE plpgsql;
+
+-- select * from get_pending_requests('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15'); --
 
 create or replace function process_pending_request(
 	CO text,

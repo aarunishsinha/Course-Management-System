@@ -6,7 +6,7 @@ The data that we would be working on is taken from: https://www.kaggle.com/Madgr
 ### Instructor Queries
 1. add_course_offering
 ```
-Input:
+INPUT:
 CID text                  --- course_id
 TC int                    --- term_code
 SN int                    --- section_num
@@ -15,4 +15,12 @@ ROOM_REQ boolean          --- room required or not
 ST text                   --- section type
 INSTRUCTOR bigint         --- instructor_id
 subj_code text            --- subject code(dept that is floating the course)
+```
+2. get_pending_requests
+```
+INPUT:
+CO text                   --- course_offering_uuid
+
+OUTPUT:
+student_id bigint           --- student id
 ```
