@@ -9,3 +9,7 @@ drop table subject_memberships cascade;
 drop table subjects cascade;
 drop table teachings cascade;
 drop table term_code cascade;
+drop table pending_requests cascade;
+drop table rejected_requests cascade;
+drop table addDrop cascade;
+drop table course_registration cascade;
