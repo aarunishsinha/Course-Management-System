@@ -1,0 +1,79 @@
+body{
+  background-image: url("/static/university.jpeg");
+  background-repeat:no-repeat;
+  background-size:cover;
+}
+
+.bodyMain{
+  width : 50%;
+  margin: 150px auto;
+}
+
+.home{
+  width: 35.5%;
+  float: left;
+  height: 120px;
+  padding: 30px 40px 60px 40px;
+  background: rgba(255, 170, 10, 0.9);
+  margin: 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 6px -6px black;
+
+}
+
+.student{
+  width: 85%;
+  background: #87CEFF		;
+}
+
+.home input[type="text"]{
+  padding:  10px 10px 10px 20px;
+  width: 80%;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+.home input[type="submit"]{
+  padding: 10px 20px;
+  /* width: 80%; */
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+  float: right;
+
+}
+
+.home input[type="submit"]:hover{
+  background-color: #cccccc;
+  transition-duration: 0.5s;
+  /* transition-delay: 0.5s; */
+  transition-property: background-color;
+
+}
+
+.Prof input[type="text"]{
+  padding: 10px;
+  width:50%;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+
+.Admin input[type="submit"]{
+  padding: 10px;
+  width: 100%;
+  float: none;
+  clear: both;
+  margin: 10px auto;
+  border: none;
+  border-radius: 4px;
+  /* float: right; */
+}
+
+.home h2{
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 25px;
+}
