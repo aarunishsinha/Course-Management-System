@@ -30,19 +30,22 @@
   </form>
   {% if requests|length > 0 %}
     <h3>Requests:</h3>
-    <form class="" action="/instructorScreen/ProcessRequests" method="post">
+
       <table>
-        <th>Student ID</th><th>Accept</th>
+        <th>Student ID</th><th>Accept/Reject</th>
         {% for i in range(requests|length) %}
           <tr>
+            <form class="" action="/instructorScreen/ProcessRequests" method="post">
             <td><input type="text" name="studentID" value="{{requests[i][1]}}" readonly></td>
             <!-- Remove radio buttons or change the class. Prefer submit buttons -->
-            <td><input type="radio" name="Accept" value="True"></td>
+            <td><input type="submit" name="Accept" value="Accept"></td>
+            <td><input type="submit" name="Accept" value="Reject"></td>
+              </form>
           </tr>
         {% endfor %}
       </table>
       <input type="Submit" name="Submit" value="Update">
-    </form>
+
   {% endif %}
 </div>
 
@@ -95,7 +98,7 @@
     <input type="number" name="nr" placeholder="NR Count">
     <input type="number" name="others" placeholder="Others">
     <input type="submit" name="submit" value="Add">
-    <p>addGradeMsg</p>
+    <p>{{addGradeMsg}}</p>
   </form>
 
   <form class="" action="/instructorScreen/getGradeDistribution" method="post">
@@ -130,6 +133,7 @@
 </div>
 
 <div class="InstructorBoxes room">
+  <h2>See Room</h2>
   <form class="" action="/instructorScreen/room" method="post">
     <input type="text" name="COID" placeholder="Enter Course Offering ID">
     <input type="number" name="SN" placeholder="Enter Section Number">

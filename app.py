@@ -21,6 +21,7 @@ app = Flask(__name__)
 # app.config['TMP'] = './tmp/'
 currentStudentLoginId = ""  # the student who is currently logged in
 currentProfLoginId = ""     # # the instructor who is currently logged in
+COID =""
 
 @app.route("/")  #main webpage rendering
 def main():
@@ -30,7 +31,7 @@ def main():
 def inst():
     global currentProfLoginId
     currentProfLoginId = request.form.get("ProfID")
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
 @app.route("/instructorScreen/AddCourse", methods = ["POST"])
 def instAC():
@@ -50,35 +51,47 @@ def instAC():
     except Exception as e:
         print (e)
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
 @app.route("/instructorScreen/Requests", methods = ["POST"])
 def instRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    global COID
     COID = request.form.get("COID")
-    # requests = [123,1231,13,144]
+    requests = [(0,123),(0,1231),(0,13),(0,144)]
+
 
     # requests = EXECUTE DATABASE QUERY HERE
-    try:
-        query="SELECT * from get_pending_requests('%s');" % (str(COID))
-        cur.execute(query)
-        requests = cur.fetchall()
-    except Exception as e:
-        print (e)
+    # try:
+    #     query="SELECT * from get_pending_requests('%s');" % (str(COID))
+    #     cur.execute(query)
+    #     requests = cur.fetchall()
+    # except Exception as e:
+    #     print (e)
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
 @app.route("/instructorScreen/ProcessRequests", methods = ["POST"])
 def instProcessRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
-    COID = request.form.get("COID")
+    global COID
+    studentID = request.form.get("studentID")
     requests = []
+    if request.form.get('Accept') == 'Accept':
+        a  = 2 # dummy line
+        # execute accept query and update variable requests with the remaiinign requests
+    else:
+        a  = 2 # dummy line
+        # execute reject query and updaten requetss with the remonaing requests
 
     # requests = EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
+
+
+
 
 @app.route("/instructorScreen/Schedule", methods = ["POST"])
 def instSchedule():
@@ -112,7 +125,7 @@ def instEnrollments():
     except Exception as e:
         print (e)
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
 
 @app.route("/instructorScreen/addGradeDistribution", methods = ["POST"])
@@ -148,7 +161,7 @@ def instGetGD():
     global currentProfLoginId
     grades = []
     # grades = EXECUTE DATABASE QUERY HERE
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = addGradeMsg, grades = grades, room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = grades, room = "", facultyCode = "")
 
 @app.route("/instructorScreen/room", methods = ["POST"])
 def instRoom():
@@ -157,7 +170,7 @@ def instRoom():
     # output = EXECUTE DATABASE QUERY HERE
     room = output[0][0]
     facultyCode = output[0][1]
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = addGradeMsg, grades = grades, room = room, facultyCode = facultyCode)
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = grades, room = room, facultyCode = facultyCode)
 
 
 
