@@ -1,7 +1,7 @@
 create table courses(
 	uuid text not null,
 	name text,
-	num int, 
+	num int,
 	constraint courses_key primary key (uuid)
 	);
 create table term_code(
@@ -15,7 +15,7 @@ create table course_offerings(
 	course_uuid text not null,
 	term_code int not null,
 	name text ,
-	
+
 	constraint course_offerings_key primary key (uuid),
 	constraint course_uuid_ref foreign key (course_uuid) references courses(uuid),
 	constraint term_code_ref foreign key (term_code) references term_code(code)
@@ -125,14 +125,14 @@ create table addDrop(
 	constraint addDrop_key primary key (term_code),
 	constraint term_code_ref foreign key (term_code) references term_code(code)
 	);
--- \copy courses from 'database/courses.csv' delimiter ',' csv header;
--- \copy term_code from 'database/term_code.csv' delimiter ',' csv header;
--- \copy course_offerings from 'database/course_offerings.csv' delimiter ',' csv header;
--- \copy grade_distributions from 'database/grade_distributions.csv' delimiter ',' csv header;
--- \copy instructors from 'database/instructors.csv' delimiter ',' csv header;
--- \copy rooms from 'database/rooms.csv' delimiter ',' csv header;
--- \copy schedules from 'database/schedules.csv' delimiter ',' csv header;
+\copy courses from 'database/courses.csv' delimiter ',' csv header;
+\copy term_code from 'database/term_code.csv' delimiter ',' csv header;
+\copy course_offerings from 'database/course_offerings.csv' delimiter ',' csv header;
+\copy grade_distributions from 'database/grade_distributions.csv' delimiter ',' csv header;
+\copy instructors from 'database/instructors.csv' delimiter ',' csv header;
+\copy rooms from 'database/rooms.csv' delimiter ',' csv header;
+\copy schedules from 'database/schedules.csv' delimiter ',' csv header;
 \copy sections from 'database/sections.csv' delimiter ',' csv header;
--- \copy subjects from 'database/subjects.csv' delimiter ',' csv header;
--- \copy subject_memberships from 'database/subject_memberships.csv' delimiter ',' csv header;
+\copy subjects from 'database/subjects.csv' delimiter ',' csv header;
+\copy subject_memberships from 'database/subject_memberships.csv' delimiter ',' csv header;
 \copy teachings from 'database/teachings.csv' delimiter ',' csv header;
