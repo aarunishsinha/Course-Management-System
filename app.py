@@ -25,6 +25,7 @@ app.register_blueprint(studentRoutes)
 currentStudentLoginId = ""  # the student who is currently logged in
 currentProfLoginId = ""     # # the instructor who is currently logged in
 COID =""
+SN = ""
 
 @app.route("/")  #main webpage rendering
 def main():
@@ -62,6 +63,7 @@ def instRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     global COID
+    global SN
     COID = request.form.get("COID")
     SN = request.form.get("SN")
     requests = [(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144)]
@@ -82,6 +84,7 @@ def instProcessRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     global COID
+    global SN
     studentID = request.form.get("studentID")
     requests = []
     if request.form.get('Accept') == 'Accept':
