@@ -108,3 +108,9 @@ input[type="number"]{
 ::-webkit-scrollbar-thumb {
   background: #bbbbbb;
 }
+
+.Short{
+  height: 80px;
+  overflow: scroll;
+  /* background-color: #eeeeee; */
+}

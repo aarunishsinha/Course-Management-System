@@ -13,6 +13,7 @@
     <input type="text" name="SN" placeholder="Section Number">
     <input type="text" name="LM" placeholder="Registration Limit">
     <input type="text" name="ST" placeholder="Section Type">
+    <input type="text" name="SC" placeholder="Subject Code">
     <!-- <input type="text" name="ID" placeholder="Instructor ID"> available due to logib!!-->
     <div class="labelSelect">
     <label for="RoomReq">Is Room Required?</label>
@@ -68,7 +69,8 @@
 <div class="InstructorBoxes enrollment">
   <h2>Enrollment list</h2>
   <form class="" action="/instructorScreen/enrollment" method="post">
-    <input type="text" name="COID" placeholder="Enter Course Offering ID">
+    <input type="text" name="COID" placeholder="Course Offering ID">
+    <input type="text" name="SN" placeholder="Section Number">
     <input type="submit" name="submit" value="Show">
   </form>
 
@@ -118,8 +120,9 @@
   </form>
 
   {% if grades|length > 0 %}
+  <div class="Scroll Short">
     <h3>Grade Distribution:</h3>
-    <ol>
+    <ul>
       <!--  see if there are tuples or just a simple list -->
         <li>a: {{grades[0]}}</li>
         <li>ab: {{grades[1]}}</li>
@@ -137,7 +140,8 @@
         <li>nw: {{grades[13]}}</li>
         <li>nr: {{grades[14]}}</li>
         <li>others: {{grades[15]}}</li>
-    </ol>
+    </ul>
+    </div>
   {% endif %}
 
 </div>
