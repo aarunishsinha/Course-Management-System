@@ -1,6 +1,8 @@
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for
 import os
 import psycopg2
+# import students
+from students import studentRoutes
 # import nltk
 # import numpy as np
 # import pandas as pd
@@ -10,6 +12,7 @@ conn = psycopg2.connect('dbname=postgres')
 cur = conn.cursor()
 
 app = Flask(__name__)
+app.register_blueprint(studentRoutes)
 # app['debug'] = True
 
 # UPLOAD_FOLDER ='./uploads/'
@@ -22,6 +25,7 @@ app = Flask(__name__)
 currentStudentLoginId = ""  # the student who is currently logged in
 currentProfLoginId = ""     # # the instructor who is currently logged in
 COID =""
+SN = ""
 
 @app.route("/")  #main webpage rendering
 def main():
@@ -47,7 +51,7 @@ def instAC():
 
     # EXECUTE DATABASE QUERY HERE
     try:
-        query="""SELECT add_course_offering('%s',%s,%s,%s,%s,'%s',%s);""" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId))
+        query="""SELECT add_course_offering('%s',%s,%s,%s,%s,'%s',%s,'%s');""" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId),str(SC))
         cur.execute(query)
     except Exception as e:
         print (e)
@@ -59,17 +63,19 @@ def instRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     global COID
+    global SN
     COID = request.form.get("COID")
+    SN = request.form.get("SN")
     requests = [(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144)]
 
 
     # requests = EXECUTE DATABASE QUERY HERE
-    # try:
-    #     query="SELECT * from get_pending_requests('%s');" % (str(COID))
-    #     cur.execute(query)
-    #     requests = cur.fetchall()
-    # except Exception as e:
-    #     print (e)
+    try:
+        query="SELECT * from get_pending_requests('%s',%s);" % (str(COID),str(SN))
+        cur.execute(query)
+        requests = cur.fetchall()
+    except Exception as e:
+        print (e)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
@@ -78,6 +84,7 @@ def instProcessRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     global COID
+    global SN
     studentID = request.form.get("studentID")
     requests = []
     if request.form.get('Accept') == 'Accept':
