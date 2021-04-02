@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="body2">
+
+
+<h1>Welcome {{studentID}} !</h1>
+
+<div class="InstructorBoxes registeredCourses">
+  {% if schedule|length >0 %}
+  <h2>Student's Daily Schedule and Registered Courses:</h2>
+</div>
+
+
+{% endblock %}

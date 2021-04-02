@@ -31,7 +31,8 @@
 <div class="InstructorBoxes requests">
   <h2>Manage Requests</h2>
   <form class="InsRequests" action="/instructorScreen/Requests" method="post">
-    <input type="text" name="COID" placeholder="Enter Course Offering ID">
+    <input type="text" name="COID" placeholder="Course Offering ID">
+    <input type="text" name="SN" placeholder="Section Number">
     <input type="submit" name="Submit" value="Show">
   </form>
   {% if requests|length > 0 %}

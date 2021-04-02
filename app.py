@@ -1,6 +1,8 @@
 from flask import Flask, render_template, send_from_directory, request, redirect, url_for
 import os
 import psycopg2
+# import students
+from students import studentRoutes
 # import nltk
 # import numpy as np
 # import pandas as pd
@@ -10,6 +12,7 @@ conn = psycopg2.connect('dbname=postgres')
 cur = conn.cursor()
 
 app = Flask(__name__)
+app.register_blueprint(studentRoutes)
 # app['debug'] = True
 
 # UPLOAD_FOLDER ='./uploads/'
@@ -60,6 +63,7 @@ def instRequests():
     global currentProfLoginId
     global COID
     COID = request.form.get("COID")
+    SN = request.form.get("SN")
     requests = [(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144),(0,123),(0,1231),(0,13),(0,144)]
 
 
