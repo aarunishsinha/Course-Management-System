@@ -1,12 +1,12 @@
-create materialized view disjoint_schedule as
-	select column1  as schedule_uuid from
-	(values
-			('875542a2-f786-34dd-933b-84a8af1aaaba'),
-			('f41f1e4d-cb4f-3ded-b4b0-4a7c4da044e5'),
-			('46da55a4-17f7-31a1-9492-fddb5af9cf13'),
-			('8c7cd81e-4f81-357c-a40b-43f954484804'),
-			('76c82895-6420-3a2c-bb27-5b19b2e07755'),
-			('d81c681b-958c-3b19-ace7-9f24939251c2') ) as t;
+-- create materialized view disjoint_schedule as
+-- 	select column1  as schedule_uuid from
+-- 	(values
+-- 			('875542a2-f786-34dd-933b-84a8af1aaaba'),
+-- 			('f41f1e4d-cb4f-3ded-b4b0-4a7c4da044e5'),
+-- 			('46da55a4-17f7-31a1-9492-fddb5af9cf13'),
+-- 			('8c7cd81e-4f81-357c-a40b-43f954484804'),
+-- 			('76c82895-6420-3a2c-bb27-5b19b2e07755'),
+-- 			('d81c681b-958c-3b19-ace7-9f24939251c2') ) as t;
 
 -- 1-add course offering
 create or replace function add_course_offering(
@@ -37,12 +37,14 @@ begin
 
 	insert into teachings values (INSTRUCTOR,SECTION_ID);
 	insert into subject_memberships values (subj_code,COID);
-
+	refresh materialized view instructor_course;
+	refresh materialized view schedule_room;
 
 end $$ LANGUAGE plpgsql;
 
 -- start transaction;
 -- select  add_course_offering('e9a360bc-be2d-35d1-9684-a464bbbd0c15',1214,1,150,true,'LEC',761703,'266');
+-- select  add_course_offering('21648ba2-4c4d-3436-98cb-6989d5263fcd',1214,1,150,true,'LEC',761703,'266');
 -- rollback;
 /*-----------------------------------------------------------------------------*/
 
@@ -205,6 +207,7 @@ begin
 	nr_count,
 	other_count
 	);
+	refresh materialized view grade_distribution_percentages;
 end $$ LANGUAGE plpgsql;
 
 
@@ -260,7 +263,6 @@ end $$ LANGUAGE plpgsql;
 -- select * from set_grade_distribution('07efbb06-99ef-315a-b4f0-63e799151005',2,15,7,0,0,1,0,0,0,0,0,0,0,1,0,0,0);
 /*-----------------------------------------------------------------------------*/
 
---6 get a room
 create or replace function get_room_instr(
 	COID text,
 	SECN int)
