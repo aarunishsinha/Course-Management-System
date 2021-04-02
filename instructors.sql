@@ -250,12 +250,17 @@ end $$ LANGUAGE plpgsql;
 -- select * from get_grade_distribution('9fb354bf-5eb3-3687-8352-d160952cad9f',27);
 create or replace function get_num_students_reg(
 	course_offering_uuid text)
-returns int as $$
+returns table(
+	num_student bigint
+) as $$
 begin
 	-- select reg_limit from course_offerings where course_offerings.course_offering_uuid=course_offering_uuid;
-	select count(*) from
+return query
 	(
-		select student_id from course_registrations where course_registrations.course_offering_uuid=course_offering_uuid) as t ;
+	select count(*) as num_students from
+	(
+		select student_id from course_registrations where course_registrations.course_offering=course_offering_uuid) as t
+	);
 end $$ LANGUAGE plpgsql;
 
 --example
