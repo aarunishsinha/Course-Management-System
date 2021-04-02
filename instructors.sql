@@ -162,8 +162,8 @@ end $$ LANGUAGE plpgsql;
 
 --5 grade distribution
 create or replace function set_grade_distribution(
-	course_offering_uuid text,
-	section_number int,
+	COID text,
+	SECN int,
 	a_count int,
 	ab_count int,
 	b_count int,
@@ -184,10 +184,10 @@ create or replace function set_grade_distribution(
 returns void as $$
 begin
 -- update table
-	delete from grade_distributions where grade_distributions.course_offering_uuid=course_offering_uuid and grade_distributions.section_number=section_number;
+	delete from grade_distributions where grade_distributions.course_offering_uuid=COID and grade_distributions.section_number=SECN;
 	insert into grade_distributions values(
-	course_offering_uuid,
-	section_number,
+	COID,
+	SECN,
 	a_count,
 	ab_count,
 	b_count,
@@ -254,20 +254,31 @@ begin
 	(
 		select student_id from course_registrations where course_registrations.course_offering_uuid=course_offering_uuid) as t ;
 end $$ LANGUAGE plpgsql;
+
+--example
+
+-- select * from set_grade_distribution('07efbb06-99ef-315a-b4f0-63e799151005',2,15,7,0,0,1,0,0,0,0,0,0,0,1,0,0,0);
 /*-----------------------------------------------------------------------------*/
 
 --6 get a room
 create or replace function get_room_instr(
-	course_offering_uuid text,
-	section_number int)
+	COID text,
+	SECN int)
 returns table(
 	facility_code text,
 	room_code text) as $$
 begin
-	select facility_code, room_code from rooms,
+return query
 	(
-		select room_uuid from sections where sections.course_offering_uuid=course_offering_uuid and sections.num=section_number
-	) as t1
-	where rooms.room_uuid=t1.room_uuid;
+		select distinct rooms.facility_code as fc, rooms.room_code as rc from rooms,
+		(
+			select room_uuid from sections where sections.course_offering_uuid=COID and sections.num=SECN
+		) as t1
+		where rooms.uuid=t1.room_uuid
+	);
 end $$ LANGUAGE plpgsql;
+
+--example
+
+-- select * from get_room_instr('20ab5f97-5a6b-368a-ad9e-c293eeb85939',1)
 /*-----------------------------------------------------------------------------*/
