@@ -93,6 +93,7 @@ begin
 end $$ LANGUAGE plpgsql;
 
 -- select process_pending_request('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15',true,1,12345); --
+-- select process_pending_request('new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15',false,1,12346); --
 /*-----------------------------------------------------------------------------*/
 
 -- #3-instructor schedule
@@ -121,7 +122,7 @@ returns table (
 begin
 	return query
 	(
-		select tIS.course_offered_name,schedules.start_time,schedules.end_time,schedules.mon,schedules.tues,schedules.wed,schedules.thurs,schedules.fri,schedules.sat,schedules.sun from schedules,
+		select distinct tIS.course_offered_name,schedules.start_time,schedules.end_time,schedules.mon,schedules.tues,schedules.wed,schedules.thurs,schedules.fri,schedules.sat,schedules.sun from schedules,
 		(
 			-- #select the schedule ids corresponding to the instructor in that term
 			select  tS.course_offered_name, tS.schedule_uuid from
@@ -139,7 +140,7 @@ begin
 	);
 end $$ LANGUAGE plpgsql;
 
--- select * from get_instructor_schedule(761703,1214); --
+-- select * from get_instructor_schedule(877735,1074); --
 /*-----------------------------------------------------------------------------*/
 
 -- 4 student list of course offering
@@ -237,6 +238,13 @@ begin
 	);
 end $$ LANGUAGE plpgsql;
 
+-- create or replace function delete_grade_distribution(
+-- 	course_offering_id text,
+-- 	section_num int)
+-- returns void as $$
+-- begin
+-- 	delete from grade_distributions where
+-- select * from get_grade_distribution('9fb354bf-5eb3-3687-8352-d160952cad9f',27);
 create or replace function get_num_students_reg(
 	course_offering_uuid text)
 returns int as $$
