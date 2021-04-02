@@ -43,7 +43,7 @@
         {% for i in range(requests|length) %}
           <tr>
             <form class="" action="/instructorScreen/ProcessRequests" method="post">
-            <td><input type="text" name="studentID" value="{{requests[i][1]}}" readonly></td>
+            <td><input type="text" name="studentID" value="{{requests[i][0]}}" readonly></td>
             <!-- Remove radio buttons or change the class. Prefer submit buttons -->
             <td><input type="submit" name="Accept" value="Accept"></td>
             <td><input type="submit" name="Accept" value="Reject"></td>
@@ -80,7 +80,7 @@
     <h3>Students Enrolled:</h3>
     <ol>
       {% for i in range(enrollment|length) %}
-        <li>{{enrollment[i]}}</li>
+        <li>{{enrollment[i][0]}}</li>
       {% endfor %}
     </ol>
     </div>
@@ -125,22 +125,22 @@
     <h3>Grade Distribution:</h3>
     <ul>
       <!--  see if there are tuples or just a simple list -->
-        <li>a: {{grades[0]}}</li>
-        <li>ab: {{grades[1]}}</li>
-        <li>b: {{grades[2]}}</li>
-        <li>bc: {{grades[3]}}</li>
-        <li>c: {{grades[4]}}</li>
-        <li>d: {{grades[5]}}</li>
-        <li>f: {{grades[6]}}</li>
-        <li>s: {{grades[7]}}</li>
-        <li>u: {{grades[8]}}</li>
-        <li>cr: {{grades[9]}}</li>
-        <li>n: {{grades[10]}}</li>
-        <li>p: {{grades[11]}}</li>
-        <li>i: {{grades[12]}}</li>
-        <li>nw: {{grades[13]}}</li>
-        <li>nr: {{grades[14]}}</li>
-        <li>others: {{grades[15]}}</li>
+        <li>a: {{grades[0][2]}}</li>
+        <li>ab: {{grades[0][3]}}</li>
+        <li>b: {{grades[0][4]}}</li>
+        <li>bc: {{grades[0][5]}}</li>
+        <li>c: {{grades[0][6]}}</li>
+        <li>d: {{grades[0][7]}}</li>
+        <li>f: {{grades[0][8]}}</li>
+        <li>s: {{grades[0][9]}}</li>
+        <li>u: {{grades[0][10]}}</li>
+        <li>cr: {{grades[0][11]}}</li>
+        <li>n: {{grades[0][12]}}</li>
+        <li>p: {{grades[0][13]}}</li>
+        <li>i: {{grades[0][14]}}</li>
+        <li>nw: {{grades[0][15]}}</li>
+        <li>nr: {{grades[0][16]}}</li>
+        <li>others: {{grades[0][17]}}</li>
     </ul>
     </div>
   {% endif %}
@@ -157,7 +157,7 @@
 
   {% if room !="" %}
     <p>Room: {{room}}</p>
-    <p>Faculty Code: {{facultyCode}}</p>
+    <p>Facility Code: {{facultyCode}}</p>
   {% endif %}
 
 </div>
