@@ -1,12 +1,12 @@
--- create materialized view disjoint_schedule as
--- 	select column1  as schedule_uuid from
--- 	(values
--- 			('875542a2-f786-34dd-933b-84a8af1aaaba'),
--- 			('f41f1e4d-cb4f-3ded-b4b0-4a7c4da044e5'),
--- 			('46da55a4-17f7-31a1-9492-fddb5af9cf13'),
--- 			('8c7cd81e-4f81-357c-a40b-43f954484804'),
--- 			('76c82895-6420-3a2c-bb27-5b19b2e07755'),
--- 			('d81c681b-958c-3b19-ace7-9f24939251c2') ) as t;
+create materialized view disjoint_schedule as
+	select column1  as schedule_uuid from
+	(values
+			('875542a2-f786-34dd-933b-84a8af1aaaba'),
+			('f41f1e4d-cb4f-3ded-b4b0-4a7c4da044e5'),
+			('46da55a4-17f7-31a1-9492-fddb5af9cf13'),
+			('8c7cd81e-4f81-357c-a40b-43f954484804'),
+			('76c82895-6420-3a2c-bb27-5b19b2e07755'),
+			('d81c681b-958c-3b19-ace7-9f24939251c2') ) as t;
 
 -- 1-add course offering
 create or replace function add_course_offering(
