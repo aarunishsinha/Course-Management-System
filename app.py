@@ -47,7 +47,7 @@ def instAC():
 
     # EXECUTE DATABASE QUERY HERE
     try:
-        query = "SELECT * from add_course_offering('%s',%s,%s,%s,%s,'%s',%s);" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId))
+        query="""SELECT add_course_offering('%s',%s,%s,%s,%s,'%s',%s);""" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId))
         cur.execute(query)
     except Exception as e:
         print (e)
