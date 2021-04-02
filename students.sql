@@ -91,17 +91,17 @@ returns table (
 	course_limit int,
 	instructors text,
 	department_data text,
-	facility_code text,
-	room_code text,
-	start_time int ,
-	end_time int ,
-	mon boolean ,
-	tues boolean ,
-	wed boolean ,
-	thurs boolean ,
-	fri boolean ,
-	sat boolean ,
-	sun boolean )
+	facility_code_id text,
+	room_code_id text,
+	start_time_val int ,
+	end_time_val int ,
+	m boolean ,
+	t boolean ,
+	w boolean ,
+	th boolean ,
+	f boolean ,
+	sa boolean ,
+	su boolean )
 	as $$
 DECLARE
 	CNAME text :='%' || CNAME || '%' ;
@@ -109,24 +109,27 @@ begin
 	return query
 
 	(
-		SELECT course_offering_uuid, t1.section_number, course_name, reg_limit as course_limit, instructors,
+		SELECT t1.course_offering_uuid, t1.section_number, t1.course_name, reg_limit as course_limit, t1.instructors,
 		concat_ws('-',subjects.code,subjects.abbreviation) as department_data,
 		facility_code,room_code,--room data
 		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
 		from
 	 	(
-	 		SELECT string_agg(instructor_course.instructor_name::text, ',') as instructors, course_name, course_offering_uuid, section_number 
+	 		SELECT string_agg(instructor_course.instructor_name::text, ',') as instructors, instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number 
 	 		from instructor_course where instructor_course.course_name ilike CNAME and instructor_course.course_offering_term=TC
-	 		GROUP by course_name, course_offering_uuid, section_number
+	 		GROUP by instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number
 
 	 	) as t1,
-	 	sections, subject_memberships, schedule_room
+	 	sections, subject_memberships, schedule_room, subjects
 	 	--join constraints on sections
 	 	where t1.section_number=sections.num and t1.course_offering_uuid=sections.course_offering_uuid
 	 	--join constraints on subject_memberships
 	 	and t1.course_offering_uuid=subject_memberships.course_offering_uuid
 	 	--join constraints on schedule_room
 	 	and sections.course_offering_uuid=schedule_room.course_offering_uuid and sections.num=schedule_room.section_number
+	 	--join constraints on subjects
+	 	and subjects.code=subject_memberships.subject_code
+
 	) ;
 end $$ LANGUAGE plpgsql;
 
@@ -197,14 +200,26 @@ end $$ LANGUAGE plpgsql;
 
 /*-----------------------------------------------------------------------------*/
 
---adding a course
+--adding a course. DOES NOT CHECK IF RREJECTED OR NOT. LEFT FOR THE FRONTEND TO DO
+--returns true when registered, false when gone to pending
 create or replace function add_course(
 	student_id bigint,
-	section_number int,
-	course_offering_uuid text)
-returns void as $$
+	SECN int,
+	COID text)
+returns boolean as $$
+declare
+	lim int :=(SELECT reg_limit from sections where sections.num=SECN and course_offering_uuid=COID limit 1) ;
+	cap int := (select count(*) from course_registrations where course_offering=COID and section_number=SECN group by course_offering, section_number);
 begin
+	IF(cap<lim)
+	then
 	insert into course_registrations values (course_offering_uuid,section_number, student_id);
+	return true; 
+	else
+	insert into pending_requests values (course_offering_uuid,section_number, student_id);
+	return false;
+	end if;
+
 end $$ LANGUAGE plpgsql;
 
 --EXAMPLE--
@@ -217,6 +232,7 @@ create or replace function drop_course(
 returns void as $$
 begin
 	delete from course_registrations where course_registrations.course_offering =course_offering_uuid and course_registrations.student_id= student_id;
+
 	insert into rejected_requests values (course_offering_uuid, student_id);
 
 end $$ LANGUAGE plpgsql;

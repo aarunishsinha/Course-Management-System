@@ -126,3 +126,45 @@ OUTPUT:
 facility_code text           --- facility code
 room_code text
 ```
+### Student Queries
+
+1. search_course
+```
+INPUT
+CNAME text, 			--course id
+	TC int 				--term_code
+
+OUTPUT
+	course_offering_uuid text,
+	section_number int,
+	course_name text,
+	course_limit int,
+	instructors text,
+	department_data text,
+	facility_code_id text,
+	room_code_id text,
+	start_time_val int ,
+	end_time_val int ,
+	m boolean , --class on monday or not
+	t boolean , --class on tuesday or not. Similarly for others
+	w boolean ,
+	th boolean ,
+	f boolean ,
+	sa boolean ,
+	su boolean  
+```
+
+3. add_course
+```
+
+--adding a course. DOES NOT CHECK IF RREJECTED OR NOT. LEFT FOR THE FRONTEND TO DO
+--returns true when registered, false when gone to pending
+
+INPUT
+student_id bigint,
+SECN int,
+COID text
+
+OUTPUT
+boolean
+```
