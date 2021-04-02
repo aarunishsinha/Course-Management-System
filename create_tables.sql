@@ -75,8 +75,8 @@ create table grade_distributions(
 	nw_count int,
 	nr_count int,
 	other_count int,
-	constraint grade_distributions_key primary key (course_offering_uuid,section_number) 
-	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid),
+	constraint grade_distributions_key primary key (course_offering_uuid,section_number),
+	constraint course_offering_uuid_ref foreign key (course_offering_uuid) references course_offerings(uuid)
 	);
 create table subjects(
 	code text not null,
