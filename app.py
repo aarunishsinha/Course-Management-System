@@ -47,7 +47,7 @@ def instAC():
 
     # EXECUTE DATABASE QUERY HERE
     try:
-        query="""SELECT add_course_offering('%s',%s,%s,%s,%s,'%s',%s);""" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId))
+        query="""SELECT add_course_offering('%s',%s,%s,%s,%s,'%s',%s,'%s');""" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId),str(SC))
         cur.execute(query)
     except Exception as e:
         print (e)
@@ -64,12 +64,12 @@ def instRequests():
 
 
     # requests = EXECUTE DATABASE QUERY HERE
-    # try:
-    #     query="SELECT * from get_pending_requests('%s');" % (str(COID))
-    #     cur.execute(query)
-    #     requests = cur.fetchall()
-    # except Exception as e:
-    #     print (e)
+    try:
+        query="SELECT * from get_pending_requests('%s',%s);" % (str(COID))
+        cur.execute(query)
+        requests = cur.fetchall()
+    except Exception as e:
+        print (e)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
