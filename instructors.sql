@@ -241,13 +241,6 @@ begin
 	);
 end $$ LANGUAGE plpgsql;
 
--- create or replace function delete_grade_distribution(
--- 	course_offering_id text,
--- 	section_num int)
--- returns void as $$
--- begin
--- 	delete from grade_distributions where
--- select * from get_grade_distribution('9fb354bf-5eb3-3687-8352-d160952cad9f',27);
 create or replace function get_num_students_reg(
 	course_offering_uuid text)
 returns table(

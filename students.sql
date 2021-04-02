@@ -140,7 +140,7 @@ end $$ LANGUAGE plpgsql;
 
 --5-PastCourseStats--
 create or replace function past_course_stats(
-	CNAME text 			--course id
+	CNAME text 			--string input corresponding to user query
 	)
 returns table (
 	course_name text,
@@ -201,41 +201,61 @@ end $$ LANGUAGE plpgsql;
 /*-----------------------------------------------------------------------------*/
 
 --adding a course. DOES NOT CHECK IF RREJECTED OR NOT. LEFT FOR THE FRONTEND TO DO
---returns true when registered, false when gone to pending
+--returns 1 when registered, 0 when gone to pending, -1 when already registered (in any 1 section )
 create or replace function add_course(
-	student_id bigint,
+	SID bigint,
 	SECN int,
 	COID text)
-returns boolean as $$
+returns int as $$
 declare
 	lim int :=(SELECT reg_limit from sections where sections.num=SECN and course_offering_uuid=COID limit 1) ;
 	cap int := (select count(*) from course_registrations where course_offering=COID and section_number=SECN group by course_offering, section_number);
+	registered boolean := exists (select * from course_registrations where course_registrations.course_offering=COID and course_registrations.student_id=SID limit 1);
 begin
-	IF(cap<lim)
-	then
-	insert into course_registrations values (course_offering_uuid,section_number, student_id);
-	return true; 
-	else
-	insert into pending_requests values (course_offering_uuid,section_number, student_id);
-	return false;
+	if(not registered)
+	then 
+		if(cap is null)
+		then
+			cap:=0;
+		end if;
+		if(lim is null)
+		then
+			lim:=0;
+		end if;
+		IF(cap<lim)
+		then
+			insert into course_registrations values (COID,SECN, SID);
+			return 1; 
+		else
+			insert into pending_requests values (COID,SECN, SID);
+			return 0;
+		end if;
+	else 
+		return -1;
 	end if;
-
 end $$ LANGUAGE plpgsql;
 
 --EXAMPLE--
-	-- select * from add_course()
+	-- select * from add_course(12345,1,'new121421648ba2-4c4d-3436-98cb-6989d5263fcd');
 /*-----------------------------------------------------------------------------*/
 
 create or replace function drop_course(
-	student_id bigint,
-	course_offering_uuid text)
+	SID bigint, --student id
+	COID text	--course offering id
+	)
 returns void as $$
+declare
+	registered boolean := exists (select * from course_registrations where course_registrations.course_offering=COID and course_registrations.student_id=SID);
 begin
-	delete from course_registrations where course_registrations.course_offering =course_offering_uuid and course_registrations.student_id= student_id;
-
-	insert into rejected_requests values (course_offering_uuid, student_id);
-
+	if (registered)
+	then
+		delete from course_registrations where course_registrations.course_offering =COID and course_registrations.student_id= SID;
+		insert into rejected_requests values (COID, SID);
+	end if;
 end $$ LANGUAGE plpgsql;
+--EXAMPLE--
+	-- select * from drop_course(12345,'new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15');
+
 /*-----------------------------------------------------------------------------*/
 create or replace function get_daily_schedule(
 	SID bigint)
@@ -270,5 +290,5 @@ return query
 end $$ LANGUAGE plpgsql;
 
 --EXAMPLE
--- select * from get_daily_schedule(1);
+-- select * from get_daily_schedule(12345);
 /*-----------------------------------------------------------------------------*/
