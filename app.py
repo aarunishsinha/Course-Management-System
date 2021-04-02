@@ -42,11 +42,12 @@ def instAC():
     SN = request.form.get("SN")
     LM = request.form.get("LM")
     ST = request.form.get("ST")
+    SC = request.form.get("SC")
     RoomReq = request.form.get("RoomReq")
 
     # EXECUTE DATABASE QUERY HERE
     try:
-        query = "SELECT * from add_course_offering('%s',%s,%s,%s,%s,'%s',%s);" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId))
+        query="""SELECT add_course_offering('%s',%s,%s,%s,%s,'%s',%s);""" % (str(CID),str(TC),str(SN),str(LM),str(RoomReq),str(ST),str(currentProfLoginId))
         cur.execute(query)
     except Exception as e:
         print (e)
@@ -115,6 +116,7 @@ def instEnrollments():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     COID = request.form.get("COID")
+    SN = request.form.get("SN")
     enrollment = ['Aniket','Aarunish','Jai']
 
     # enrollment = EXECUTE DATABASE QUERY HERE
@@ -154,14 +156,14 @@ def instAddGD():
 
     # addGradeMsg = EXECUTE DATABASE QUERY HERE
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
 
 @app.route("/instructorScreen/getGradeDistribution", methods = ["POST"])
 def instGetGD():
     global currentProfLoginId
-    grades = []
+    grades = [1,2,3,4,5,6,7,7,8,8,34,2,6,42,6634,24,523]
     # grades = EXECUTE DATABASE QUERY HERE
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = grades, room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = grades, room = "", facultyCode = "")
 
 @app.route("/instructorScreen/room", methods = ["POST"])
 def instRoom():

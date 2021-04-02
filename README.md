@@ -59,3 +59,70 @@ SECN int                  --- section_number
 
 OUTPUT:
 student_id bigint         --- student_id
+```
+6. set_grade_distribution
+```
+INPUT:
+COID text                 --- course_offering_uuid
+SECN int                  --- section number
+a_count int               
+ab_count int
+b_count int
+bc_count int
+c_count int
+d_count int
+f_count int
+s_count int
+u_count int
+cr_count int
+n_count int
+p_count int
+i_count int
+nw_count int
+nr_count int
+other_count int
+```
+7. get_grade_distribution
+```
+INPUT:
+course_offering_id text    --- course_offering_uuid
+section_num int            --- section number
+
+OUTPUT:
+COID text                  --- course_offering_uuid
+SECN int                   --- section number
+a_count int               
+ab_count int
+b_count int
+bc_count int
+c_count int
+d_count int
+f_count int
+s_count int
+u_count int
+cr_count int
+n_count int
+p_count int
+i_count int
+nw_count int
+nr_count int
+other_count int
+```
+8. get_num_students_reg
+```
+INPUT:
+course_offering_uuid text
+
+OUTPUT:
+num_student bigint           --- number of students in the course
+```
+9. get_room_instr
+```
+INPUT:
+COID text                    --- course_offering_uuid
+SECN int                     --- section number
+
+OUTPUT:
+facility_code text           --- facility code
+room_code text
+```
