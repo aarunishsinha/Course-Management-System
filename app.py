@@ -69,7 +69,7 @@ def instRequests():
 
     # requests = EXECUTE DATABASE QUERY HERE
     try:
-        query="SELECT * from get_pending_requests('%s',%s);" % (str(COID))
+        query="SELECT * from get_pending_requests('%s',%s);" % (str(COID),str(SN))
         cur.execute(query)
         requests = cur.fetchall()
     except Exception as e:
