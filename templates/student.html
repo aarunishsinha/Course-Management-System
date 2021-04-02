@@ -9,6 +9,21 @@
 <div class="InstructorBoxes registeredCourses">
   {% if schedule|length >0 %}
   <h2>Student's Daily Schedule and Registered Courses:</h2>
+  <div class="Scroll">
+  <table>
+    <th>Course Name</th><th>Course Offering ID</th><th>Days</th><th>Start Time</th><th>End Time</th><th>Room</th><th>Section Type</th>
+    {% for i in range(requests|length) %}
+      <tr>
+        <form class="" action="/instructorScreen/ProcessRequests" method="post">
+        <td><input type="text" name="studentID" value="{{requests[i][1]}}" readonly></td>
+        <!-- Remove radio buttons or change the class. Prefer submit buttons -->
+        <td><input type="submit" name="Accept" value="Accept"></td>
+        <td><input type="submit" name="Accept" value="Reject"></td>
+          </form>
+      </tr>
+    {% endfor %}
+  </table>
+    </div>
 </div>
 
 
