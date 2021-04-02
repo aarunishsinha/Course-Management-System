@@ -1,0 +1,110 @@
+/* body{
+  background-image: none;
+  background-color: #f1f1f1;
+} */
+
+body{
+  background-image: url("/static/instructor.jpg");
+  background-repeat:no-repeat;
+  background-size:cover;
+  font-family: HKNova;
+}
+
+.body2{
+  width: 80%;
+  margin: 30px auto;
+}
+
+.InstructorBoxes{
+  width: 25%;
+  float: left;
+  height: 360px;
+  background-color: #96e596;
+  background-image: linear-gradient(#96e596,#96e596,#91c391);
+  border-radius: 20px;
+  margin: 10px 10px 30px 10px;
+  padding: 40px;
+  overflow: hidden;
+  box-shadow: 0 8px 10px -6px black;
+}
+
+h2{
+ font-family: HKNova;
+ text-align: center;
+ font-size: 25px;
+ margin: -10px 0px 20px 0px;
+}
+
+h1{
+  color: white;
+  font-family: HKNova;
+}
+
+
+input[type="text"], #SN{
+  padding:  5px;
+  width: 40%;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  /* float: left; */
+}
+
+.requests input[type="text"], .enrollment input[type="text"] , .room input[type="text"], .Schedule input[type="text"] , .room input[type="number"] {
+  padding:  5px;
+  width: 65%;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  /* float: left; */
+}
+
+input[type="submit"], select{
+  padding: 5px 20px;
+  /* width: 80%; */
+  margin:5px;
+  border: none;
+  border-radius: 4px;
+  /* float: right; */
+}
+.labelSelect{
+  display: block;
+  margin: 5px;
+}
+/* select{
+  padding: 5px 5px;
+} */
+
+input[type="submit"]:hover, select:hover{
+  background-color: #cccccc;
+  transition-duration: 0.5s;
+  /* transition-delay: 0.5s; */
+  transition-property: background-color;
+}
+
+input[type="number"]{
+  padding:  5px;
+  width: 17%;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  /* float: left; */
+}
+
+.Scroll{
+  height: 200px;
+  overflow: scroll;
+  /* background-color: #eeeeee; */
+}
+.Scroll::-webkit-scrollbar {
+  /* display: none; */
+  border: none;
+  width: 3px;
+  height: 3px;
+  margin: 10px;
+  background-color: #eeeeee;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bbbbbb;
+}

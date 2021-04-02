@@ -5,6 +5,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/mainScreen.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/instructor.css') }}">
 	<title>Home360QM</title>
 </head>
 
@@ -12,7 +14,7 @@
 	<!-- A bar at the top contains the logo and name of store at the left -->
 	<nav>
 		<img id= "logo" src="/static/logo.png"/>
-		<a id="heading" href="">CMS</a>
+		<a id="heading" href="">Course Management System</a>
 	</nav>
   {% block body %} {% endblock %}
 </body>

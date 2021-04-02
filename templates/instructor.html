@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<h2>Welcome {{currentProfLoginId}} !</h2>
+<div class="body2">
+
+
+<h1>Welcome {{currentProfLoginId}} !</h1>
 <div class="InstructorBoxes InsAddCourse">
   <h2>Add a Course to Teach</h2>
   <form class="InsAddCourseForm" action="/instructorScreen/AddCourse" method="post">
@@ -11,11 +14,13 @@
     <input type="text" name="LM" placeholder="Registration Limit">
     <input type="text" name="ST" placeholder="Section Type">
     <!-- <input type="text" name="ID" placeholder="Instructor ID"> available due to logib!!-->
+    <div class="labelSelect">
     <label for="RoomReq">Is Room Required?</label>
     <select id="RoomReq" name="RoomReq">
       <option value="True">Yes</option>
       <option value="False">No</option>
     </select>
+      </div>
     <p>{{AddCourseMsg}}</p>
     <input type="submit" name="AddCourse" value="Add">
   </form>
@@ -30,7 +35,7 @@
   </form>
   {% if requests|length > 0 %}
     <h3>Requests:</h3>
-
+      <div class="Scroll">
       <table>
         <th>Student ID</th><th>Accept/Reject</th>
         {% for i in range(requests|length) %}
@@ -44,6 +49,7 @@
           </tr>
         {% endfor %}
       </table>
+        </div>
       <input type="Submit" name="Submit" value="Update">
 
   {% endif %}
@@ -65,14 +71,18 @@
     <input type="text" name="COID" placeholder="Enter Course Offering ID">
     <input type="submit" name="submit" value="Show">
   </form>
+
   {% if enrollment|length > 0 %}
+  <div class="Scroll">
     <h3>Students Enrolled:</h3>
     <ol>
       {% for i in range(enrollment|length) %}
         <li>{{enrollment[i]}}</li>
       {% endfor %}
     </ol>
+    </div>
   {% endif %}
+
 </div>
 
 
@@ -80,7 +90,7 @@
   <h2>Grade Distribution</h2>
   <form class="" action="/instructorScreen/addGradeDistribution" method="post">
     <input type="text" name="COID" placeholder="Course Offering ID">
-    <input type="number" name="SN" placeholder="Section Number">
+    <input id = "SN" type="number" name="SN" placeholder="Section Number">
     <input type="number" name="a" placeholder="A Count">
     <input type="number" name="ab" placeholder="AB Count">
     <input type="number" name="b" placeholder="B Count">
@@ -147,5 +157,6 @@
 
 </div>
 
+</div>
 
 {% endblock %}
