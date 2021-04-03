@@ -249,32 +249,18 @@ declare
 	--also see if there is no clash
 	clash int :=
 	(
-<<<<<<< HEAD
 		with s as (select * from get_daily_schedule(SID)),
 		c as (select distinct start_time as start_time_c,end_time as end_time_c,mon as mon_c,tues as tues_c,wed as wed_c,thurs as thurs_c,fri as fri_c,sat as sat_c,sun as sun_c from sections join schedules on sections.schedule_uuid=schedules.uuid where sections.course_offering_uuid=COID and sections.num=SECN )
 		select count(*) from s,c where
-=======
-		with s as (select * from get_daily_schedule(SID)), 
-		c as (select distinct start_time as start_time_c,end_time as end_time_c,mon as mon_c,tues as tues_c,wed as wed_c,thurs as thurs_c,fri as fri_c,sat as sat_c,sun as sun_c from sections join schedules on sections.schedule_uuid=schedules.uuid where sections.course_offering_uuid=COID and sections.num=SECN )
-		select count(*) from s,c where 
->>>>>>> b6c94da387f6571917fbbf9298a457a4eb940dc8
 	--is there a clash of days. if yes then see timing
 		(
 			(m and mon_c) or (t and tues_c) or (w and wed_c) or (th and thurs_c) or (f and fri_c) or (sa and sat_c) or (su and sun_c)
 		)
-<<<<<<< HEAD
 		and
 		--check timing
 		(
 			not (
 					(start_time<start_time_c and end_time<=start_time_c)
-=======
-		and 
-		--check timing
-		(
-			not (
-					(start_time<start_time_c and end_time<=start_time_c) 
->>>>>>> b6c94da387f6571917fbbf9298a457a4eb940dc8
 					or (start_time_c<start_time and end_time_c<=start_time)
 				)
 		)
@@ -283,17 +269,10 @@ declare
 	-- clash int := (select * from clash(schedules_join));
 begin
 	if(not registered)
-<<<<<<< HEAD
 	then
 		if (clash>0 or clash is null)
 		then
 			return 2;--theres a clash with another registered course
-=======
-	then 
-		if (clash>0 or clash is null)
-		then
-			return 2;--theres a clash with another registered course 
->>>>>>> b6c94da387f6571917fbbf9298a457a4eb940dc8
 		end if;
 		if(cap is null)
 		then
