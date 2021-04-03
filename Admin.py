@@ -13,7 +13,7 @@ adminRoutes = Blueprint('adminRoutes',__name__,template_folder='templates',
 
 @adminRoutes.route("/adminScreen", methods = ["POST"])
 def adminMain():
-    return render_template("Admin.html", StartMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "")
+    return render_template("Admin.html", StartMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg="")
 
 
 @adminRoutes.route("/adminScreen/startAddDrop", methods = ["POST"])
@@ -33,7 +33,7 @@ def adminStartAddDrop():
     except Exception as e:
         print (e)
 
-    return render_template("Admin.html",startMsg = startMsg, endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "")
+    return render_template("Admin.html",startMsg = startMsg, endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg="")
 
 
 @adminRoutes.route("/adminScreen/endAddDrop", methods = ["POST"])
@@ -53,7 +53,7 @@ def adminEndAddDrop():
     except Exception as e:
         print (e)
 
-    return render_template("Admin.html",startMsg = "", endMsg=endMsg, checkMsg = "", addMsg = "", addStudentMsg = "")
+    return render_template("Admin.html",startMsg = "", endMsg=endMsg, checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg="")
 
 
 @adminRoutes.route("/adminScreen/isAddDropOn", methods = ["POST"])
@@ -63,7 +63,7 @@ def adminIsAddDropOn():
 
     # checkMsg = EXECUTE QUERY HERE
 
-    return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = checkMsg, addMsg = "", addStudentMsg = "")
+    return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = checkMsg, addMsg = "", addStudentMsg = "", startTermMsg="")
 
 
 @adminRoutes.route("/adminScreen/addNewCourse", methods = ["POST"])
@@ -84,7 +84,7 @@ def adminaddCourse():
     except Exception as e:
         print (e)
 
-    return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = addMsg, addStudentMsg = "")
+    return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = addMsg, addStudentMsg = "", startTermMsg="")
 
 
 @adminRoutes.route("/adminScreen/addNewStudent", methods = ["POST"])
@@ -105,4 +105,14 @@ def adminaddStudent():
     except Exception as e:
         print (e)
 
-    return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = addStudentMsg)
+    return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = addStudentMsg, startTermMsg="")
+
+
+@adminRoutes.route("/adminScreen/startTerm", methods = ["POST"])
+def adminStartTerm():
+    TC = request.form.get("TC")
+    termMsg = "Term Started"
+    # EXECUTE QUERY HERE
+    # termMsg = "Error Starting the Term"  -- add under exception block
+
+    return render_template("Admin.html", StartMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg=termMsg)
