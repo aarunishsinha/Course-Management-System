@@ -225,7 +225,40 @@ OUTPUT
 
 1. start_addDrop
 ```
-
+INPUT
+	tc int --term code
+OUTPUT
+	VOID
+```
+2. end_addDrop
+```
+INPUT
+	tc int --term code
+OUTPUT
+	VOID
+```
+3. is_addDrop_on
+```
+INPUT
+	tc int --term code
+OUTPUT
+	boolean
+```
+4. addNewCourse
+```
+INPUT
+	code text, --a small code from which the uuid is generated
+	name text
+OUTPUT
+	void
+```
+5. addNewStudent
+```
+INPUT
+	id bigint,
+	name text
+OUTPUT
+	void
 ```
 
 
