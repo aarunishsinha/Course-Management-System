@@ -10,6 +10,7 @@ app = Flask(__name__)
 
 adminRoutes = Blueprint('adminRoutes',__name__,template_folder='templates',
     static_folder='static')
+TC = ""
 
 @adminRoutes.route("/adminScreen", methods = ["POST"])
 def adminMain():
@@ -18,6 +19,7 @@ def adminMain():
 
 @adminRoutes.route("/adminScreen/startAddDrop", methods = ["POST"])
 def adminStartAddDrop():
+    global TC
     TC = request.form.get("TC")
     startMsg = "Add Drop Started"
 
@@ -29,7 +31,7 @@ def adminStartAddDrop():
         COMMIT;
         """ % (str(TC))
         cur.execute(query)
-        startMsg="Add/Drop Period started"
+        startMsg="Add/Drop Period started for Term" + str(TC)
     except Exception as e:
         print (e)
 
@@ -38,7 +40,8 @@ def adminStartAddDrop():
 
 @adminRoutes.route("/adminScreen/endAddDrop", methods = ["POST"])
 def adminEndAddDrop():
-    TC = request.form.get("TC")
+    # TC = request.form.get("TC")
+    global TC
     endMsg = "Add Drop Ended"
 
     # endMsg = EXECUTE QUERY HERE
@@ -49,7 +52,7 @@ def adminEndAddDrop():
         COMMIT;
         """ % (str(TC))
         cur.execute(query)
-        endMsg="Add/Drop Period ended"
+        endMsg="Add/Drop Period ended for Term" + str(TC)
     except Exception as e:
         print (e)
 
@@ -59,9 +62,25 @@ def adminEndAddDrop():
 @adminRoutes.route("/adminScreen/isAddDropOn", methods = ["POST"])
 def adminIsAddDropOn():
     TC = request.form.get("TC")
-    checkMsg = "Add Drop is not on"
+    checkMsg = "default"
 
     # checkMsg = EXECUTE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT * from is_addDrop_on(%s);
+        """ % (str(TC))
+        cur.execute(query)
+        is_it=cur.fetchall()
+        cur.execute("COMMIT;")
+        is_it = is_it[0][0]
+        if is_it==True:
+            checkMsg="Add/Drop is ON"
+        else:
+            checkMsg="Add/Drop is OFF"
+    except Exception as e:
+        print (e)
+
 
     return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = checkMsg, addMsg = "", addStudentMsg = "", startTermMsg="")
 
@@ -80,7 +99,7 @@ def adminaddCourse():
         COMMIT;
         """ % (str(CID),str(CN))
         cur.execute(query)
-        addMsg-"Course added"
+        addMsg="Course added"
     except Exception as e:
         print (e)
 
@@ -101,7 +120,7 @@ def adminaddStudent():
         COMMIT;
         """ % (str(SID),str(SN))
         cur.execute(query)
-        addMsg-"Student Registered"
+        addStudentMsg="Student Registered"
     except Exception as e:
         print (e)
 
@@ -111,8 +130,19 @@ def adminaddStudent():
 @adminRoutes.route("/adminScreen/startTerm", methods = ["POST"])
 def adminStartTerm():
     TC = request.form.get("TC")
-    termMsg = "Term Started"
+    termMsg = "default"
     # EXECUTE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT start_term(%s);
+        COMMIT;
+        """ % (str(TC))
+        cur.execute(query)
+        termMsg="Term Started"
+    except Exception as e:
+        print (e)
+        termMsg = "Error Starting the Term"
     # termMsg = "Error Starting the Term"  -- add under exception block
 
     return render_template("Admin.html", StartMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg=termMsg)
