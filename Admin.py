@@ -2,6 +2,12 @@ from flask import Blueprint, Flask, render_template, send_from_directory, reques
 import os
 import psycopg2
 
+conn = psycopg2.connect('dbname=postgres')
+
+cur = conn.cursor()
+
+app = Flask(__name__)
+
 adminRoutes = Blueprint('adminRoutes',__name__,template_folder='templates',
     static_folder='static')
 
@@ -16,6 +22,16 @@ def adminStartAddDrop():
     startMsg = "Add Drop Started"
 
     # startMsg = EXECUTE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT start_addDrop(%s);
+        COMMIT;
+        """ % (str(TC))
+        cur.execute(query)
+        startMsg="Add/Drop Period started"
+    except Exception as e:
+        print (e)
 
     return render_template("Admin.html",startMsg = startMsg, endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "")
 
