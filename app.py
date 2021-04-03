@@ -44,6 +44,7 @@ def instAC():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     CID = request.form.get("CID")
+    TC = ""
     # TC = request.form.get("TC")
     SN = request.form.get("SN")
     LM = request.form.get("LM")
@@ -51,6 +52,17 @@ def instAC():
     SC = request.form.get("SC")
     RoomReq = request.form.get("RoomReq")
 
+    try:
+        query1="""
+        BEGIN;
+        SELECT * from current_term;
+        """
+        cur.execute(query1)
+        TC=cur.fetchall()
+        cur.execute("COMMIT;")
+        TC=TC[0][0]
+    except Exception as e:
+        print(e)
     # EXECUTE DATABASE QUERY HERE
     try:
         query="""
@@ -142,9 +154,21 @@ def instProcessRequests():
 def instSchedule():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    TC=""
     # TC = request.form.get("TC")
     schedule = []
 
+    try:
+        query1="""
+        BEGIN;
+        SELECT * from current_term;
+        """
+        cur.execute(query1)
+        TC=cur.fetchall()
+        cur.execute("COMMIT;")
+        TC=TC[0][0]
+    except Exception as e:
+        print(e)
     # schedule = EXECUTE DATABASE QUERY HERE
     try:
         query="""
