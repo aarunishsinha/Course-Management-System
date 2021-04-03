@@ -91,24 +91,29 @@
   </form>
   {% if pastStats|length >0 %}
   <div class="Scroll studentScroll">
-    {% for i in range(pastStats|length) %}
-      <p>a%: {{pastStats[0][0]}}</p>
-      <p>ab%: {{pastStats[0][2]}}</p>
-      <p>b%: {{pastStats[0][3]}}</p>
-      <p>bc%: {{pastStats[0][4]}}</p>
-      <p>c%: {{pastStats[0][5]}}</p>
-      <p>d%: {{pastStats[0][6]}}</p>
-      <p>f%: {{pastStats[0][7]}}</p>
-      <p>s%: {{pastStats[0][8]}}</p>
-      <p>u%: {{pastStats[0][9]}}</p>
-      <p>cr%: {{pastStats[0][10]}}</p>
-      <p>n%: {{pastStats[0][11]}}</p>
-      <p>p%: {{pastStats[0][12]}}</p>
-      <p>i%: {{pastStats[0][13]}}</p>
-      <p>nw%: {{pastStats[0][14]}}</p>
-      <p>nr%: {{pastStats[0][15]}}</p>
-      <p>other%: {{pastStats[0][16]}}</p>
-    {% endfor %}
+    <table>
+      <th>Course Name</th><th>a%</th><th>ab%</th><th>b%</th><th>bc%</th><th>c%</th><th>d%</th><th>f%</th><th>s%</th><th>u%</th><th>cr%</th><th>n%</th><th>p%</th><th>i%</th><th>nw%</th><th>nr%</th><th>other%</th>
+      {% for i in range(pastStats|length) %}
+        <tr>
+          <p>a%: {{pastStats[i][0]}}</p>
+          <p>ab%: {{pastStats[i][2]}}</p>
+          <p>b%: {{pastStats[i][3]}}</p>
+          <p>bc%: {{pastStats[i][4]}}</p>
+          <p>c%: {{pastStats[i][5]}}</p>
+          <p>d%: {{pastStats[i][6]}}</p>
+          <p>f%: {{pastStats[i][7]}}</p>
+          <p>s%: {{pastStats[i][8]}}</p>
+          <p>u%: {{pastStats[i][9]}}</p>
+          <p>cr%: {{pastStats[i][10]}}</p>
+          <p>n%: {{pastStats[i][11]}}</p>
+          <p>p%: {{pastStats[i][12]}}</p>
+          <p>i%: {{pastStats[i][13]}}</p>
+          <p>nw%: {{pastStats[i][14]}}</p>
+          <p>nr%: {{pastStats[i][15]}}</p>
+          <p>other%: {{pastStats[i][16]}}</p>
+        </tr>
+      {% endfor %}
+        </table>
   </div>
   {% endif %}
 </div>
