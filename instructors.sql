@@ -303,4 +303,4 @@ begin
 end $$ LANGUAGE plpgsql;
 
 --EXAMPLE
-select * from search_course_instructor('machine');
+--select * from search_course_instructor('machine');--

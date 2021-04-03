@@ -3,6 +3,7 @@ import os
 import psycopg2
 # import students
 from students import studentRoutes
+from Admin import adminRoutes
 # import nltk
 # import numpy as np
 # import pandas as pd
@@ -13,6 +14,7 @@ cur = conn.cursor()
 
 app = Flask(__name__)
 app.register_blueprint(studentRoutes)
+app.register_blueprint(adminRoutes)
 # app['debug'] = True
 
 # UPLOAD_FOLDER ='./uploads/'
@@ -84,6 +86,7 @@ def instRequests():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+    # print(requests)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
@@ -119,6 +122,16 @@ def instProcessRequests():
             print (e)
 
     # requests = EXECUTE DATABASE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT * from get_pending_requests('%s',%s);
+        """ % (str(COID),str(SN))
+        cur.execute(query)
+        requests = cur.fetchall()
+        cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
 
@@ -143,6 +156,7 @@ def instSchedule():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+    print(schedule);
     #  Will make schedule.html once query is executed and exact form is known
     return render_template("schedule.html",currentProfLoginId = currentProfLoginId,schedule = schedule)
 

@@ -1,34 +1,116 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<div class="body2">
+<div class="body2 studentBody">
 
 
 <h1>Welcome {{studentID}} !</h1>
 
-<div class="InstructorBoxes registeredCourses">
+<div class="InstructorBoxes studentBoxes registeredCourses">
   {% if schedule|length >0 %}
-  <h2>Student's Daily Schedule and Registered Courses:</h2>
-  <div class="Scroll">
+  <h2>Daily Schedule</h2>
+  <div class="Scroll studentScroll">
   <table>
-    <th>Course Name</th><th>Course Offering ID</th><th>Days</th><th>Start Time</th><th>End Time</th><th>Room</th><th>Section Type</th>
+    <th>Course Name</th><th>Section Number</th><th>Facility Code</th><th>Room Code</th><th>Start Time</th><th>End Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th><th>Drop</th>
     {% for i in range(schedule|length) %}
       <tr>
         <form class="" action="/studentScreen/dropCourse" method="post">
         <td><input type="text" name="CN" value="{{schedule[i][0]}}" readonly></td>
-        <td><input type="text" name="COID" value="{{schedule[i][1]}}" readonly></td>
-        <td><input type="text" name="Days" value="{{schedule[i][2]}}" readonly></td>
-        <td><input type="text" name="STime" value="{{schedule[i][3]}}" readonly></td>
-        <td><input type="text" name="ETime" value="{{schedule[i][4]}}" readonly></td>
-        <td><input type="text" name="Room" value="{{schedule[i][5]}}" readonly></td>
-        <td><input type="text" name="ST" value="{{schedule[i][6]}}" readonly></td>
+        <td><input type="text" name="SN" value="{{schedule[i][1]}}" readonly></td>
+        <td><input type="text" name="FC" value="{{schedule[i][2]}}" readonly></td>
+        <td><input type="text" name="RC" value="{{schedule[i][3]}}" readonly></td>
+        <td><input type="text" name="STime" value="{{schedule[i][4]}}" readonly></td>
+        <td><input type="text" name="ETime" value="{{schedule[i][5]}}" readonly></td>
+        <td><input type="text" name="M" value="{{schedule[i][6]}}" readonly></td>
+        <td><input type="text" name="T" value="{{schedule[i][7]}}" readonly></td>
+        <td><input type="text" name="W" value="{{schedule[i][8]}}" readonly></td>
+        <td><input type="text" name="Th" value="{{schedule[i][9]}}" readonly></td>
+        <td><input type="text" name="F" value="{{schedule[i][10]}}" readonly></td>
+        <td><input type="text" name="Sat" value="{{schedule[i][11]}}" readonly></td>
+        <td><input type="text" name="Sun" value="{{schedule[i][12]}}" readonly></td>
         <td><input type="submit" name="Drop" value="Drop"></td>
           </form>
       </tr>
     {% endfor %}
   </table>
     </div>
+    {% endif %}
 </div>
+
+<div class="InstructorBoxes studentBoxes SearchCourse">
+  <h2>Search for a Course</h2>
+  <form class="" action="/studentScreen/searchCourse" method="post">
+    <input type="text" name="CName" placeholder="Course Name">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="submit" name="submit" value="Search">
+  </form>
+
+  {% if searchResults|length >0 %}
+  <h2 id="topMargin">Available Courses</h2>
+  <div class="Scroll studentScroll">
+    <table>
+      <th>Course Offering ID</th><th>Section Number</th><th>Course Name</th><th>Course Limit</th><th>Instructors</th><th>Department Data</th><th>Facility Code ID</th><th>Room Code ID</th><th>Start Time</th><th>End Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th>
+      {% for i in range(searchResults|length) %}
+        <tr>
+          <form class="" action="/studentScreen/AddCourse" method="post">
+            <td><input type="text" name="COID" value="{{searchResults[i][0]}}" readonly></td>
+            <td><input type="text" name="SN" value="{{searchResults[i][1]}}" readonly></td>
+            <td><input type="text" name="CN" value="{{searchResults[i][2]}}" readonly></td>
+            <td><input type="text" name="CL" value="{{searchResults[i][3]}}" readonly></td>
+            <td><input type="text" name="Inst" value="{{searchResults[i][4]}}" readonly></td>
+            <td><input type="text" name="DD" value="{{searchResults[i][5]}}" readonly></td>
+            <td><input type="text" name="FC" value="{{searchResults[i][6]}}" readonly></td>
+            <td><input type="text" name="Room" value="{{searchResults[i][7]}}" readonly></td>
+            <td><input type="text" name="STime" value="{{searchResults[i][8]}}" readonly></td>
+            <td><input type="text" name="ETime" value="{{searchResults[i][9]}}" readonly></td>
+            <td><input type="text" name="M" value="{{searchResults[i][10]}}" readonly></td>
+            <td><input type="text" name="T" value="{{searchResults[i][11]}}" readonly></td>
+            <td><input type="text" name="W" value="{{searchResults[i][12]}}" readonly></td>
+            <td><input type="text" name="Th" value="{{searchResults[i][13]}}" readonly></td>
+            <td><input type="text" name="F" value="{{searchResults[i][14]}}" readonly></td>
+            <td><input type="text" name="Sat" value="{{searchResults[i][15]}}" readonly></td>
+            <td><input type="text" name="Sun" value="{{searchResults[i][16]}}" readonly></td>
+          <td><input type="submit" name="Add" value="Add"></td>
+            </form>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endif %}
+</div>
+
+<div class="InstructorBoxes studentBoxes pastStats">
+  <h2>Past Stats</h2>
+  <form class="" action="/studentScreen/pastStats" method="post">
+    <input type="text" name="CName" placeholder="Course Name">
+    <input type="submit" name="submit" placeholder="Show">
+  </form>
+  {% if pastStats|length >0 %}
+  <div class="Scroll studentScroll">
+    {% for i in range(pastStats|length) %}
+      <p>a%: {{pastStats[0][0]}}</p>
+      <p>ab%: {{pastStats[0][2]}}</p>
+      <p>b%: {{pastStats[0][3]}}</p>
+      <p>bc%: {{pastStats[0][4]}}</p>
+      <p>c%: {{pastStats[0][5]}}</p>
+      <p>d%: {{pastStats[0][6]}}</p>
+      <p>f%: {{pastStats[0][7]}}</p>
+      <p>s%: {{pastStats[0][8]}}</p>
+      <p>u%: {{pastStats[0][9]}}</p>
+      <p>cr%: {{pastStats[0][10]}}</p>
+      <p>n%: {{pastStats[0][11]}}</p>
+      <p>p%: {{pastStats[0][12]}}</p>
+      <p>i%: {{pastStats[0][13]}}</p>
+      <p>nw%: {{pastStats[0][14]}}</p>
+      <p>nr%: {{pastStats[0][15]}}</p>
+      <p>other%: {{pastStats[0][16]}}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+</div>
+
 
 
 

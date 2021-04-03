@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="body2">
+<h1>Welcome Admin !</h1>
+
+<div class="InstructorBoxes adminBoxes addDropStart">
+  <h2>Start Add Drop Phase</h2>
+  <form class="" action="/adminScreen/startAddDrop" method="post">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="submit" name="submit" value="Start">
+    {% if startMsg != "" %}
+      <p>{{startMsg}}</p>
+    {% endif %}
+  </form>
+</div>
+
+<div class="InstructorBoxes adminBoxes addDropEnd">
+  <h2>End Add Drop Phase</h2>
+  <form class="" action="/adminScreen/endAddDrop" method="post">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="submit" name="submit" value="End">
+    {% if endMsg != "" %}
+      <p>{{endMsg}}</p>
+    {% endif %}
+  </form>
+</div>
+
+
+<div class="InstructorBoxes adminBoxes isAddDropOn">
+  <h2>Check Add Drop Phase</h2>
+  <form class="" action="/adminScreen/isAddDropOn" method="post">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="submit" name="submit" value="End">
+    {% if checkMsg != "" %}
+      <p>{{checkMsg}}</p>
+    {% endif %}
+  </form>
+</div>
+
+
+<div class="InstructorBoxes adminBoxes addNewCourse">
+<h2>Introduce New Course</h2>
+  <form class="" action="/adminScreen/addNewCourse" method="post">
+    <input type="text" name="CID" placeholder="Course Code">
+    <input type="text" name="CN" placeholder="Course Name">
+    <input type="submit" name="submit" value="Add">
+    {% if addMsg != "" %}
+      <p>{{addMsg}}</p>
+    {% endif %}
+  </form>
+</div>
+
+<div class="InstructorBoxes adminBoxes addNewStudent">
+  <h2>Add New Student</h2>
+  <form class="" action="/adminScreen/addNewStudent" method="post">
+    <input type="text" name="SID" placeholder="Student ID">
+    <input type="text" name="SN" placeholder="Student Name">
+    <input type="submit" name="submit" value="Add">
+    {% if addStudentMsg != "" %}
+      <p>{{addStudentMsg}}</p>
+    {% endif %}
+  </form>
+</div>
+
+
+</div>
+{% endblock %}

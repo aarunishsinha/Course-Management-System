@@ -1,0 +1,14 @@
+.addDropStart input[type="text"], .addDropEnd input[type="text"] , .isAddDropOn input[type="text"]{
+  padding:  5px;
+  width: 65%;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  /* float: left; */
+}
+
+.adminBoxes{
+  height: 180px;
+  background: #ffb347;
+  background-image: linear-gradient(#ffc87a,#ffb347,#ff9447);
+}

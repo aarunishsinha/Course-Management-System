@@ -77,3 +77,8 @@ body{
   text-align: center;
   font-size: 25px;
 }
+
+.Prof{
+  background-color: #96e596;
+  /* background-image: linear-gradient(#96e596,#96e596,#91c391); */
+}
