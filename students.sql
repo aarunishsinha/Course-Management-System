@@ -214,13 +214,14 @@ returns table (
 	th boolean ,
 	f boolean ,
 	sa boolean ,
-	su boolean )
+	su boolean ,
+	COID text )
 as $$
 begin
 return query
 	select courses.name as course_name, schedule_room.section_number,
 	schedule_room.facility_code, schedule_room.room_code,--room data
-	schedule_room.start_time,schedule_room.end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
+	schedule_room.start_time,schedule_room.end_time,mon,tues,wed,thurs,fri,sat,sun,t.course_offering as COID --schedule data
 	from
 	(
 		select course_offering, course_registrations.section_number from course_registrations where course_registrations.student_id=SID

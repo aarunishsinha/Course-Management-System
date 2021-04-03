@@ -73,6 +73,7 @@ def stdDropCourse():
     F = request.form.get("F")
     Sat = request.form.get("Sat")
     Sun = request.form.get("Sun")
+    COID = request.form.get("COID")
 
     schedule = [(1,1,1,1,1,1,1,1,1,1,1,1,1),(1,1,1,1,1,1,1,1,1,1,1,1,1)]
 
@@ -82,7 +83,19 @@ def stdDropCourse():
         BEGIN;
         SELECT * from drop_course(%s,'%s');
         """ % (str(studentID),str(COID))
-    # schedule = UPDATE Schedule. EXECUTE QUERY 6 HERE. Following order from slides
+        cur.execute(query)
+        cur.execute("COMMIT;")
+    # schedule = UPDATE Schedule. EXECUTE QUERY 6 HERE. Following order from
+    try:
+        query="""
+        BEGIN;
+        SELECT * from get_daily_schedule(%s);
+        """ % (str(studentID))
+        cur.execute(query)
+        schedule=cur.fetchall()
+        cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = "", searchResults = [])
 
