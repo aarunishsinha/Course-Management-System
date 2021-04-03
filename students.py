@@ -37,9 +37,21 @@ def stdSearchCourse():
     global studentID
     global schedule
     CName = request.form.get("CName")
+    TC = ""
     # TC = request.form.get("TC")
     searchResults = [("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo"),("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo"),("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo")]
 
+    try:
+        query1="""
+        BEGIN;
+        SELECT * from current_term;
+        """
+        cur.execute(query1)
+        TC=cur.fetchall()
+        cur.execute("COMMIT;")
+        TC=TC[0][0]
+    except Exception as e:
+        print(e)
     # searchResults = EXECUTE QUERY 6 HERE. Following order from slides
     try:
         query="""
