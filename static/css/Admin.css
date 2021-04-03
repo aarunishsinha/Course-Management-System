@@ -12,3 +12,8 @@
   background: #ffb347;
   background-image: linear-gradient(#ffc87a,#ffc87a,#ffb347,#ff9447);
 }
+
+#End{
+  width: 100%;
+  margin: auto;
+}

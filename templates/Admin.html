@@ -18,8 +18,8 @@
 <div class="InstructorBoxes adminBoxes addDropEnd">
   <h2>End Add Drop Phase</h2>
   <form class="" action="/adminScreen/endAddDrop" method="post">
-    <input type="text" name="TC" placeholder="Term Code">
-    <input type="submit" name="submit" value="End">
+    <!-- <input type="text" name="TC" placeholder="Term Code"> -->
+    <input id = "End" type="submit" name="submit" value="End">
     {% if endMsg != "" %}
       <p>{{endMsg}}</p>
     {% endif %}
@@ -31,7 +31,7 @@
   <h2>Check Add Drop Phase</h2>
   <form class="" action="/adminScreen/isAddDropOn" method="post">
     <input type="text" name="TC" placeholder="Term Code">
-    <input type="submit" name="submit" value="End">
+    <input type="submit" name="submit" value="Check">
     {% if checkMsg != "" %}
       <p>{{checkMsg}}</p>
     {% endif %}
