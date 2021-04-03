@@ -2,6 +2,12 @@ from flask import Blueprint, Flask, render_template, send_from_directory, reques
 import os
 import psycopg2
 
+conn = psycopg2.connect('dbname=postgres')
+
+cur = conn.cursor()
+
+app = Flask(__name__)
+
 
 studentRoutes = Blueprint('studentRoutes',__name__,template_folder='templates',static_folder='static')
 studentID = ""
@@ -13,6 +19,16 @@ def std():
     global schedule
     studentID = request.form.get("StudentID")
     # schedule = EXECUTE QUERY 6 HERE. Following order from slides
+    try:
+        query="""
+        BEGIN;
+        SELECT * from get_daily_schedule(%s);
+        """ % (str(studentID))
+        cur.execute(query)
+        schedule=cur.fetchall()
+        cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = "", searchResults = [])
 
@@ -25,6 +41,16 @@ def stdSearchCourse():
     searchResults = [("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo"),("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo"),("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo")]
 
     # searchResults = EXECUTE QUERY 6 HERE. Following order from slides
+    try:
+        query="""
+        BEGIN;
+        SELECT * from search_course('%s',%s);
+        """ % (str(CName),str(TC))
+        cur.execute(query)
+        searchResults=cur.fetchall()
+        cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = "", searchResults = searchResults)
 
