@@ -85,6 +85,8 @@ def stdDropCourse():
         """ % (str(studentID),str(COID))
         cur.execute(query)
         cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
     # schedule = UPDATE Schedule. EXECUTE QUERY 6 HERE. Following order from
     try:
         query="""
