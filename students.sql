@@ -115,7 +115,7 @@ begin
 		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
 		from
 	 	(
-	 		SELECT string_agg(instructor_course.instructor_name::text, ',') as instructors, instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number 
+	 		SELECT string_agg(instructor_course.instructor_name::text, ',') as instructors, instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number
 	 		from instructor_course where instructor_course.course_name ilike CNAME and instructor_course.course_offering_term=TC
 	 		GROUP by instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number
 
@@ -249,18 +249,18 @@ declare
 	--also see if there is no clash
 	clash int :=
 	(
-		with s as (select * from get_daily_schedule(SID)), 
+		with s as (select * from get_daily_schedule(SID)),
 		c as (select distinct start_time as start_time_c,end_time as end_time_c,mon as mon_c,tues as tues_c,wed as wed_c,thurs as thurs_c,fri as fri_c,sat as sat_c,sun as sun_c from sections join schedules on sections.schedule_uuid=schedules.uuid where sections.course_offering_uuid=COID and sections.num=SECN )
-		select count(*) from s,c where 
+		select count(*) from s,c where
 	--is there a clash of days. if yes then see timing
 		(
 			(m and mon_c) or (t and tues_c) or (w and wed_c) or (th and thurs_c) or (f and fri_c) or (sa and sat_c) or (su and sun_c)
 		)
-		and 
+		and
 		--check timing
 		(
 			not (
-					(start_time<start_time_c and end_time<=start_time_c) 
+					(start_time<start_time_c and end_time<=start_time_c)
 					or (start_time_c<start_time and end_time_c<=start_time)
 				)
 		)
@@ -269,10 +269,10 @@ declare
 	-- clash int := (select * from clash(schedules_join));
 begin
 	if(not registered)
-	then 
+	then
 		if (clash>0 or clash is null)
 		then
-			return 2;--theres a clash with another registered course 
+			return 2;--theres a clash with another registered course
 		end if;
 		if(cap is null)
 		then
@@ -285,12 +285,12 @@ begin
 		IF(cap<lim)
 		then
 			insert into course_registrations values (COID,SECN, SID);
-			return 1; 
+			return 1;
 		else
 			insert into pending_requests values (COID,SECN, SID);
 			return 0;
 		end if;
-	else 
+	else
 		return -1;
 	end if;
 	-- return clash;
