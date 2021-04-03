@@ -5,6 +5,61 @@
 
 
 <h1>Welcome {{currentProfLoginId}} !</h1>
+
+
+
+<div class="InstructorBoxes studentBoxes Schedule">
+  <h2>See Schedule</h2>
+  {% if schedule|length >0 %}
+  <h2>Daily Schedule</h2>
+  <div class="Scroll">
+    <table>
+      <th>Course Offering ID</th><th>Course Name</th><th>Start Time</th><th>End Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th>
+      {% for i in range(schedule|length) %}
+        <tr>
+          <td>{{schedule[i][0]}}</td>
+          <td>{{schedule[i][1]}}</td>
+          <td>{{schedule[i][2]}}</td>
+          <td>{{schedule[i][3]}}</td>
+          <td>{{schedule[i][4]}}</td>
+          <td>{{schedule[i][5]}}</td>
+          <td>{{schedule[i][6]}}</td>
+          <td>{{schedule[i][7]}}</td>
+          <td>{{schedule[i][8]}}</td>
+          <td>{{schedule[i][9]}}</td>
+          <td>{{schedule[i][10]}}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+    {% endif %}
+</div>
+
+
+<div class="InstructorBoxes searchCourseIns">
+  <h2>Search Course</h2>
+    <form class="" action="/instructorScreen/searchCourse" method="post">
+      <input type="text" name="CName" placeholder="Course Name">
+      <input type="submit" name="submit" value="Search">
+    </form>
+
+    {% if searchResults|length > 0 %}
+    <div class="Scroll studentScroll">
+      <h3>Courses:</h3>
+      <table>
+        <th>Course ID</th><th>Course Name</th>
+        {% for i in range(searchResults|length) %}
+          <tr>
+            <td>{{searchResults[i][0]}}</td>
+            <td>{{searchResults[i][1]}}</td>
+          </tr>
+        {% endfor %}
+      </table>
+      </div>
+    {% endif %}
+</div>
+
+
 <div class="InstructorBoxes InsAddCourse">
   <h2>Add a Course to Teach</h2>
   <form class="InsAddCourseForm" action="/instructorScreen/AddCourse" method="post">
@@ -57,14 +112,6 @@
   {% endif %}
 </div>
 
-
-<div class="InstructorBoxes Schedule">
-  <h2>See Schedule</h2>
-  <form class="" action="/instructorScreen/Schedule" method="post">
-    <!-- <input type="text" name="TC" placeholder="Term Code"> -->
-    <input type="submit" name="submit" value="Show">
-  </form>
-</div>
 
 
 <div class="InstructorBoxes enrollment">

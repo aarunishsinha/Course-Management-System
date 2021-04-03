@@ -28,6 +28,7 @@ currentStudentLoginId = ""  # the student who is currently logged in
 currentProfLoginId = ""     # # the instructor who is currently logged in
 COID =""
 SN = ""
+schedule = []
 
 @app.route("/")  #main webpage rendering
 def main():
@@ -36,13 +37,62 @@ def main():
 @app.route("/instructorScreen", methods = ["POST"])
 def inst():
     global currentProfLoginId
+    global schedule
     currentProfLoginId = request.form.get("ProfID")
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
+    TC = ""
+
+    try:
+        query1="""
+        BEGIN;
+        SELECT * from current_term;
+        """
+        cur.execute(query1)
+        TC=cur.fetchall()
+        cur.execute("COMMIT;")
+        TC=TC[0][0]
+    except Exception as e:
+        print(e)
+    # schedule = EXECUTE DATABASE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT * from get_instructor_schedule(%s,%s);
+        """ % (str(currentProfLoginId),str(TC))
+        cur.execute(query)
+        schedule=cur.fetchall()
+        cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
+        try:
+            query1="""
+            BEGIN;
+            SELECT * from current_term;
+            """
+            cur.execute(query1)
+            TC=cur.fetchall()
+            cur.execute("COMMIT;")
+            TC=TC[0][0]
+        except Exception as e:
+            print(e)
+        # schedule = EXECUTE DATABASE QUERY HERE
+        try:
+            query="""
+            BEGIN;
+            SELECT * from get_instructor_schedule(%s,%s);
+            """ % (str(currentProfLoginId),str(TC))
+            cur.execute(query)
+            schedule=cur.fetchall()
+            cur.execute("COMMIT;")
+        except Exception as e:
+            print (e)
+
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 @app.route("/instructorScreen/AddCourse", methods = ["POST"])
 def instAC():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    global schedule
     CID = request.form.get("CID")
     TC = ""
     # TC = request.form.get("TC")
@@ -74,12 +124,13 @@ def instAC():
     except Exception as e:
         print (e)
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 @app.route("/instructorScreen/Requests", methods = ["POST"])
 def instRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    global schedule
     global COID
     global SN
     COID = request.form.get("COID")
@@ -100,12 +151,13 @@ def instRequests():
         print (e)
     # print(requests)
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 @app.route("/instructorScreen/ProcessRequests", methods = ["POST"])
 def instProcessRequests():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    global schedule
     global COID
     global SN
     studentID = request.form.get("studentID")
@@ -145,7 +197,7 @@ def instProcessRequests():
     except Exception as e:
         print (e)
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 
 
@@ -154,6 +206,7 @@ def instProcessRequests():
 def instSchedule():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    global schedule
     TC=""
     # TC = request.form.get("TC")
     schedule = []
@@ -180,14 +233,16 @@ def instSchedule():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
-    print(schedule);
+    # print(schedule);
     #  Will make schedule.html once query is executed and exact form is known
-    return render_template("schedule.html",currentProfLoginId = currentProfLoginId,schedule = schedule)
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
+
 
 @app.route("/instructorScreen/enrollment", methods = ["POST"])
 def instEnrollments():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    global schedule
     COID = request.form.get("COID")
     SN = request.form.get("SN")
     enrollment = ['Aniket','Aarunish','Jai']
@@ -204,13 +259,14 @@ def instEnrollments():
     except Exception as e:
         print (e)
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 
 @app.route("/instructorScreen/addGradeDistribution", methods = ["POST"])
 def instAddGD():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
+    global schedule
     COID = request.form.get("COID")
     SN = request.form.get("SN")
     a = request.form.get("a")
@@ -243,11 +299,12 @@ def instAddGD():
         print (e)
         addGradeMsg="Error occured while updating"
 
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 @app.route("/instructorScreen/getGradeDistribution", methods = ["POST"])
 def instGetGD():
     global currentProfLoginId
+    global schedule
     grades = [1,2,3,4,5,6,7,7,8,8,34,2,6,42,6634,24,523]
     COID = request.form.get("COID")
     SN = request.form.get("SN")
@@ -262,11 +319,12 @@ def instGetGD():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = grades, room = "", facultyCode = "")
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = grades, room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 @app.route("/instructorScreen/room", methods = ["POST"])
 def instRoom():
     global currentProfLoginId
+    global schedule
     COID = request.form.get("COID")
     SN = request.form.get("SN")
     output = [('LH121','Narula101')]
@@ -284,7 +342,18 @@ def instRoom():
 
     room = output[0][0]
     facultyCode = output[0][1]
-    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = room, facultyCode = facultyCode)
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = room, facultyCode = facultyCode, schedule = schedule, searchResults=[])
+
+
+@app.route("/instructorScreen/searchCourse", methods = ["POST"])
+def instsearchCourse():
+    global currentProfLoginId
+    global schedule
+    CName = request.form.get("CName")
+    searchResults = [(1,"course A"), (2,"Course B"),(1,"course A"), (2,"Course B"),(1,"course A"), (2,"Course B")]
+    #  searchResults = EXECUTE DATABASE QUERY HERE
+    return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=searchResults)
+
 
 
 

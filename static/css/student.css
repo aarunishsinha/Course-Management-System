@@ -1,6 +1,6 @@
-.studentBoxes table input[type="text"]{
+/* .studentBoxes table input[type="text"]{
   width: 80px;
-}
+} */
 .studentBoxes{
   width: 38%;
   background: #87CEFF;
@@ -33,4 +33,20 @@
 
 .studentScroll td{
   width: 100px;
+}
+
+/*
+td input{
+  margin: 15px;
+  width: 300px;
+  padding: 15px;
+}
+th{
+  margin: 15px;
+} */
+/* input[type="text", readonly]{
+  width: 200px;
+} */
+.searchCourse table th{
+  width: 300px;
 }
