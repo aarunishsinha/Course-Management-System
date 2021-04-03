@@ -1,0 +1,28 @@
+.studentBoxes table input[type="text"]{
+  width: 80px;
+}
+.studentBoxes{
+  width: 38%;
+  background: #87CEFF;
+  background-image: linear-gradient(#87CEFF,#87CEFF,#aec6cf);
+}
+
+.studentBoxes{
+  width: 85%;
+  margin: 10px auto;
+  clear: both;
+  display: block;
+}
+
+.studentBody{
+  width: 70%;
+}
+
+.studentScroll{
+  height: 280px;
+  margin-top: 10px;
+}
+
+#topMargin{
+  margin-top: 10px;
+}

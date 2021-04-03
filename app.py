@@ -3,6 +3,7 @@ import os
 import psycopg2
 # import students
 from students import studentRoutes
+from Admin import adminRoutes
 # import nltk
 # import numpy as np
 # import pandas as pd
@@ -13,6 +14,7 @@ cur = conn.cursor()
 
 app = Flask(__name__)
 app.register_blueprint(studentRoutes)
+app.register_blueprint(adminRoutes)
 # app['debug'] = True
 
 # UPLOAD_FOLDER ='./uploads/'
