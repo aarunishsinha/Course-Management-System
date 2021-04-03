@@ -92,7 +92,8 @@
   {% if pastStats|length >0 %}
   <div class="Scroll studentScroll">
     {% for i in range(pastStats|length) %}
-      <p>a%: {{pastStats[0][0]}}</p>
+      <p>Course Name: {{pastStats[0][0]}}</p>
+      <p>a%: {{pastStats[0][1]}}</p>
       <p>ab%: {{pastStats[0][2]}}</p>
       <p>b%: {{pastStats[0][3]}}</p>
       <p>bc%: {{pastStats[0][4]}}</p>
