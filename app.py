@@ -44,7 +44,7 @@ def instAC():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
     CID = request.form.get("CID")
-    TC = request.form.get("TC")
+    # TC = request.form.get("TC")
     SN = request.form.get("SN")
     LM = request.form.get("LM")
     ST = request.form.get("ST")
@@ -142,7 +142,7 @@ def instProcessRequests():
 def instSchedule():
     # See what is to be done with AddCourseMsg
     global currentProfLoginId
-    TC = request.form.get("TC")
+    # TC = request.form.get("TC")
     schedule = []
 
     # schedule = EXECUTE DATABASE QUERY HERE

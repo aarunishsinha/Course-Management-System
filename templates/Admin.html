@@ -63,6 +63,17 @@
   </form>
 </div>
 
+<div class="InstructorBoxes adminBoxes startTerm">
+  <h2>Start Term</h2>
+  <form class="" action="/adminScreen/startTerm" method="post">
+    <input type="text" name="TC" placeholder="Term Code">
+    <input type="submit" name="submit" value="Start">
+    {% if startTermMsg != "" %}
+      <p>{{startTermMsg}}</p>
+    {% endif %}
+  </form>
+</div>
+
 
 </div>
 {% endblock %}

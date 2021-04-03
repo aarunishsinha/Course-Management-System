@@ -37,7 +37,7 @@ def stdSearchCourse():
     global studentID
     global schedule
     CName = request.form.get("CName")
-    TC = request.form.get("TC")
+    # TC = request.form.get("TC")
     searchResults = [("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo"),("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo"),("aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo","aboo")]
 
     # searchResults = EXECUTE QUERY 6 HERE. Following order from slides

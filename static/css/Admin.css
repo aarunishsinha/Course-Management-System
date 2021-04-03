@@ -10,5 +10,5 @@
 .adminBoxes{
   height: 180px;
   background: #ffb347;
-  background-image: linear-gradient(#ffc87a,#ffb347,#ff9447);
+  background-image: linear-gradient(#ffc87a,#ffc87a,#ffb347,#ff9447);
 }
