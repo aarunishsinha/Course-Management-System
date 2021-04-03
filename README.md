@@ -126,3 +126,139 @@ OUTPUT:
 facility_code text           --- facility code
 room_code text
 ```
+### Student Queries
+
+1. search_course
+```
+INPUT
+	CNAME text, 			--course id
+	TC int 					--term_code
+
+OUTPUT
+	course_offering_uuid text,
+	section_number int,
+	course_name text,
+	course_limit int,
+	instructors text,
+	department_data text,
+	facility_code_id text,
+	room_code_id text,
+	start_time_val int ,
+	end_time_val int ,
+	m boolean , 			--class on monday or not
+	t boolean , 			--class on tuesday or not. Similarly for others
+	w boolean ,
+	th boolean ,
+	f boolean ,
+	sa boolean ,
+	su boolean  
+```
+2. past_course_stats
+```
+INPUT
+	CNAME text 			--string input corresponding to user query
+
+OUTPUT
+	course_name text,
+	a_percent numeric(10,2),
+	ab_percent numeric(10,2),
+	b_percent numeric(10,2),
+	bc_percent numeric(10,2),
+	c_percent numeric(10,2),
+	d_percent numeric(10,2),
+	f_percent numeric(10,2),
+	s_percent numeric(10,2),
+	u_percent numeric(10,2),
+	cr_percent numeric(10,2),
+	n_percent numeric(10,2),
+	p_percent numeric(10,2),
+	i_percent numeric(10,2),
+	nw_percent numeric(10,2),
+	nr_percent numeric(10,2),
+	other_percent numeric(10,2)
+```
+
+3. add_course
+```
+--adding a course. DOES NOT CHECK IF REQUEST IS REJECTED OR NOT. LEFT FOR THE FRONTEND TO DO
+--returns 1 when registered, 0 when gone to pending, -1 when already registered (in any 1 section ), 2 when the course clashes with schedule of another course the student is in
+
+INPUT
+	student_id bigint,
+	SECN int,
+	COID text
+
+OUTPUT
+	int status 
+```
+
+4. drop_course
+```
+INPUT: 
+	SID bigint, --student id
+	COID text	--course offering id
+
+OUTPUT
+	VOID
+```
+
+5. get_daily_schedule
+```
+INPUT
+	SID bigint --student id
+OUTPUT
+	course_name text,
+	section_number int,
+	facility_code text,
+	room_code text,
+	start_time int ,
+	end_time int ,
+	m boolean , 		--class on monday or not
+	t boolean ,			--class on tuesday or not. Similarly for others
+	w boolean ,
+	th boolean ,
+	f boolean ,
+	sa boolean ,
+	su boolean
+```
+### Admin Queries
+
+1. start_addDrop
+```
+INPUT
+	tc int --term code
+OUTPUT
+	VOID
+```
+2. end_addDrop
+```
+INPUT
+	tc int --term code
+OUTPUT
+	VOID
+```
+3. is_addDrop_on
+```
+INPUT
+	tc int --term code
+OUTPUT
+	boolean
+```
+4. addNewCourse
+```
+INPUT
+	code text, --a small code from which the uuid is generated
+	name text
+OUTPUT
+	void
+```
+5. addNewStudent
+```
+INPUT
+	id bigint,
+	name text
+OUTPUT
+	void
+```
+
+
