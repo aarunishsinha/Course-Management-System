@@ -130,6 +130,11 @@ create table addDrop(
 	constraint addDrop_key primary key (term_code),
 	constraint term_code_ref foreign key (term_code) references term_code(code)
 	);
+create table current_term(
+	term_code int not null,
+	constraint current_term_key primary key (term_code),
+	constraint term_code_ct_ref foreign key (term_code) references term_code(code)
+	);
 \copy courses from 'database/courses.csv' delimiter ',' csv header;
 \copy term_code from 'database/term_code.csv' delimiter ',' csv header;
 \copy course_offerings from 'database/course_offerings.csv' delimiter ',' csv header;

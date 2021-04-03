@@ -55,3 +55,16 @@ begin
 end $$ language plpgsql;
 --EXAMPLE
 -- select * from addNewStudent('1256','Jvgsgwe');
+/*-----------------------------------------------------------------------------*/
+
+create or replace function start_term(
+	tc int)
+returns void as $$
+begin
+	delete from current_term;
+	insert into current_term values (tc);
+end $$ language plpgsql;
+
+--EXAMPLE
+select * from start_term(1214);
+/*-----------------------------------------------------------------------------*/

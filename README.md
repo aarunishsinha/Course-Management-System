@@ -272,5 +272,12 @@ INPUT
 OUTPUT
 	void
 ```
+6. start_term
+```
+INPUT
+	tc int --term code
+OUTPUT
+	VOID
+```
 
 
