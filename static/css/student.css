@@ -26,3 +26,11 @@
 #topMargin{
   margin-top: 10px;
 }
+
+#CourseName{
+  width: 300px;
+}
+
+.studentScroll td{
+  width: 100px;
+}

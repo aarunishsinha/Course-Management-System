@@ -102,11 +102,12 @@ input[type="number"]{
   width: 3px;
   height: 3px;
   margin: 10px;
-  background-color: #eeeeee;
+  background-color: rgba(200,200,200,0.2);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bbbbbb;
+  background: #ffffff;
+  display: inline;
 }
 
 .Short{

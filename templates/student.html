@@ -15,7 +15,7 @@
     {% for i in range(schedule|length) %}
       <tr>
         <form class="" action="/studentScreen/dropCourse" method="post">
-        <td><input type="text" name="CN" value="{{schedule[i][0]}}" readonly></td>
+        <td><input id = "CourseName" type="text" name="CN" value="{{schedule[i][0]}}" readonly></td>
         <td><input type="text" name="SN" value="{{schedule[i][1]}}" readonly></td>
         <td><input type="text" name="FC" value="{{schedule[i][2]}}" readonly></td>
         <td><input type="text" name="RC" value="{{schedule[i][3]}}" readonly></td>
@@ -95,22 +95,23 @@
       <th>Course Name</th><th>a%</th><th>ab%</th><th>b%</th><th>bc%</th><th>c%</th><th>d%</th><th>f%</th><th>s%</th><th>u%</th><th>cr%</th><th>n%</th><th>p%</th><th>i%</th><th>nw%</th><th>nr%</th><th>other%</th>
       {% for i in range(pastStats|length) %}
         <tr>
-          <p>a%: {{pastStats[i][0]}}</p>
-          <p>ab%: {{pastStats[i][2]}}</p>
-          <p>b%: {{pastStats[i][3]}}</p>
-          <p>bc%: {{pastStats[i][4]}}</p>
-          <p>c%: {{pastStats[i][5]}}</p>
-          <p>d%: {{pastStats[i][6]}}</p>
-          <p>f%: {{pastStats[i][7]}}</p>
-          <p>s%: {{pastStats[i][8]}}</p>
-          <p>u%: {{pastStats[i][9]}}</p>
-          <p>cr%: {{pastStats[i][10]}}</p>
-          <p>n%: {{pastStats[i][11]}}</p>
-          <p>p%: {{pastStats[i][12]}}</p>
-          <p>i%: {{pastStats[i][13]}}</p>
-          <p>nw%: {{pastStats[i][14]}}</p>
-          <p>nr%: {{pastStats[i][15]}}</p>
-          <p>other%: {{pastStats[i][16]}}</p>
+          <td>{{pastStats[i][0]}}</td>
+          <td> {{pastStats[i][2]}}</td>
+          <td> {{pastStats[i][3]}}</td>
+          <td> {{pastStats[i][4]}}</td>
+          <td> {{pastStats[i][5]}}</td>
+          <td>{{pastStats[i][6]}}</td>
+          <td> {{pastStats[i][7]}}</td>
+          <td> {{pastStats[i][8]}}</td>
+          <td> {{pastStats[i][9]}}</td>
+          <td>{{pastStats[i][10]}}</td>
+          <td> {{pastStats[i][11]}}</td>
+          <td> {{pastStats[i][12]}}</td>
+          <td> {{pastStats[i][13]}}</td>
+          <td> {{pastStats[i][14]}}</td>
+          <td> {{pastStats[i][15]}}</td>
+          <td> {{pastStats[i][16]}}</td>
+          <td> {{pastStats[i][17]}}</td>
         </tr>
       {% endfor %}
         </table>
