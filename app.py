@@ -352,6 +352,16 @@ def instsearchCourse():
     CName = request.form.get("CName")
     searchResults = [(1,"course A"), (2,"Course B"),(1,"course A"), (2,"Course B"),(1,"course A"), (2,"Course B")]
     #  searchResults = EXECUTE DATABASE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT * from search_course_instructor('%s');
+        """ % (str(CName))
+        cur.execute(query)
+        searchResults=cur.fetchall()
+        cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=searchResults)
 
 
