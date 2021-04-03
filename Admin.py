@@ -42,6 +42,16 @@ def adminEndAddDrop():
     endMsg = "Add Drop Ended"
 
     # endMsg = EXECUTE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT end_addDrop(%s);
+        COMMIT;
+        """ % (str(TC))
+        cur.execute(query)
+        endMsg="Add/Drop Period ended"
+    except Exception as e:
+        print (e)
 
     return render_template("Admin.html",startMsg = "", endMsg=endMsg, checkMsg = "", addMsg = "", addStudentMsg = "")
 

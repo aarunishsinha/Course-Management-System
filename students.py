@@ -179,7 +179,7 @@ def stdPastStats():
     global studentID
     global schedule
     CName = request.form.get("CName")
-    pastStats = [(0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10)]
+    pastStats = [("sdkvsdv",0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10)]
 
     # pastStats = EXECUTE QUERY HERE
     try:
