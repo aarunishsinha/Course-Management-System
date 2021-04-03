@@ -283,3 +283,24 @@ end $$ LANGUAGE plpgsql;
 
 -- select * from get_room_instr('20ab5f97-5a6b-368a-ad9e-c293eeb85939',1)
 /*-----------------------------------------------------------------------------*/
+
+--1-SearchCourse--
+create or replace function search_course_instructor(
+	CNAME text 			--course id
+	)
+returns table (
+	course_uuid text,
+	course_name text
+	)
+	as $$
+DECLARE
+	CNAME text :='%' || CNAME || '%' ;
+begin
+	return query
+	(
+		select uuid, name from courses where courses.name ilike CNAME
+	) ;
+end $$ LANGUAGE plpgsql;
+
+--EXAMPLE
+select * from search_course_instructor('machine');

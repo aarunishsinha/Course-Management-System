@@ -127,6 +127,16 @@ OUTPUT:
 facility_code text           --- facility code
 room_code text
 ```
+10. search_course_instructor
+```
+INPUT:
+	CNAME: text -- the search substring given too be found
+
+OUTPUT:
+	course_uuid text,
+	course_name text
+```
+
 ### Student Queries
 
 1. search_course
@@ -222,6 +232,7 @@ OUTPUT
 	sa boolean ,
 	su boolean
 ```
+
 ### Admin Queries
 
 1. start_addDrop
