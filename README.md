@@ -181,7 +181,7 @@ OUTPUT
 3. add_course
 ```
 --adding a course. DOES NOT CHECK IF REQUEST IS REJECTED OR NOT. LEFT FOR THE FRONTEND TO DO
---returns 1 when registered, 0 when gone to pending, -1 when already registered (in any 1 section )
+--returns 1 when registered, 0 when gone to pending, -1 when already registered (in any 1 section ), 2 when the course clashes with schedule of another course the student is in
 
 INPUT
 	student_id bigint,
@@ -220,6 +220,12 @@ OUTPUT
 	f boolean ,
 	sa boolean ,
 	su boolean
+```
+### Admin Queries
+
+1. start_addDrop
+```
+
 ```
 
 
