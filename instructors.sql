@@ -110,6 +110,7 @@ create or replace function get_instructor_schedule(
 	TC int
 	)
 returns table (
+	course_offering_uuid text,
 	course_offered_name text,
 	start_time int,
 	end_time int,
@@ -124,19 +125,19 @@ returns table (
 begin
 	return query
 	(
-		select distinct tIS.course_offered_name,schedules.start_time,schedules.end_time,schedules.mon,schedules.tues,schedules.wed,schedules.thurs,schedules.fri,schedules.sat,schedules.sun from schedules,
+		select distinct tIS.course_offering_uuid, tIS.course_offered_name,schedules.start_time,schedules.end_time,schedules.mon,schedules.tues,schedules.wed,schedules.thurs,schedules.fri,schedules.sat,schedules.sun from schedules,
 		(
 			-- #select the schedule ids corresponding to the instructor in that term
-			select  tS.course_offered_name, tS.schedule_uuid from
+			select  tS.course_offering_uuid, tS.course_offered_name, tS.schedule_uuid from
 			(--select the sections of the particular instructor
 				select teachings.section_uuid from teachings where teachings.instructor_id=INSTRUCTOR
 			) as tI,
 			(--select the section entries of all the course offering in a given term
-				select sections.uuid, tCO.course_offered_name, sections.schedule_uuid from sections,
+				select tCO.course_offering_uuid , sections.uuid, tCO.course_offered_name, sections.schedule_uuid from sections,
 				(
 					-- #select the course offerings of a particular term.
-					select course_offerings.uuid, course_offerings.name as course_offered_name from course_offerings where course_offerings.term_code=TC
-				) as tCO where sections.course_offering_uuid=tCO.uuid
+					select course_offerings.uuid as course_offering_uuid, course_offerings.name as course_offered_name from course_offerings where course_offerings.term_code=TC
+				) as tCO where sections.course_offering_uuid=tCO.course_offering_uuid
 			) as tS where tI.section_uuid=tS.uuid
 		) as tIS where tIS.schedule_uuid=schedules.uuid
 	);
@@ -282,3 +283,24 @@ end $$ LANGUAGE plpgsql;
 
 -- select * from get_room_instr('20ab5f97-5a6b-368a-ad9e-c293eeb85939',1)
 /*-----------------------------------------------------------------------------*/
+
+--1-SearchCourse--
+create or replace function search_course_instructor(
+	CNAME text 			--course id
+	)
+returns table (
+	course_uuid text,
+	course_name text
+	)
+	as $$
+DECLARE
+	CNAME text :='%' || CNAME || '%' ;
+begin
+	return query
+	(
+		select uuid, name from courses where courses.name ilike CNAME
+	) ;
+end $$ LANGUAGE plpgsql;
+
+--EXAMPLE
+--select * from search_course_instructor('machine');--

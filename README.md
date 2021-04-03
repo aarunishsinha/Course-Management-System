@@ -40,16 +40,17 @@ INSTRUCTOR bigint         --- instructor_id
 TC int                    --- term_code
 
 OUTPUT:
-course_offered_name text  --- course_offering_name
-start_time int            --- start time in minutes of day
-end_time int              --- end time in minutes of day
-mon boolean               --- true is schedule is on monday
-tues boolean              --- true is schedule is on tuesday
-wed boolean               --- and so on....
-thurs boolean             ---
-fri boolean               ---
-sat boolean               ---
-sun boolean               ---   
+	course_offering_uuid text,--- the unique id number
+	course_offered_name text  --- course_offering_name
+	start_time int            --- start time in minutes of day
+	end_time int              --- end time in minutes of day
+	mon boolean               --- true is schedule is on monday
+	tues boolean              --- true is schedule is on tuesday
+	wed boolean               --- and so on....
+	thurs boolean             ---
+	fri boolean               ---
+	sat boolean               ---
+	sun boolean               ---   
 ```
 5. get_student_list
 ```
@@ -126,6 +127,16 @@ OUTPUT:
 facility_code text           --- facility code
 room_code text
 ```
+10. search_course_instructor
+```
+INPUT:
+	CNAME: text -- the search substring given too be found
+
+OUTPUT:
+	course_uuid text,
+	course_name text
+```
+
 ### Student Queries
 
 1. search_course
@@ -221,6 +232,7 @@ OUTPUT
 	sa boolean ,
 	su boolean
 ```
+
 ### Admin Queries
 
 1. start_addDrop
