@@ -70,9 +70,19 @@ def adminIsAddDropOn():
 def adminaddCourse():
     CID = request.form.get("CID") # course id
     CN = request.form.get("CN") # course name
-    addMsg = "Course Added"
+    addMsg = "default"
 
     # addMsg = EXECUTE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT addNewCourse('%s','%s');
+        COMMIT;
+        """ % (str(CID),str(CN))
+        cur.execute(query)
+        addMsg-"Course added"
+    except Exception as e:
+        print (e)
 
     return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = addMsg, addStudentMsg = "")
 
@@ -81,8 +91,18 @@ def adminaddCourse():
 def adminaddStudent():
     SID = request.form.get("SID")  # student ID
     SN = request.form.get("SN")  # student name
-    addStudentMsg = "Student Added"
+    addStudentMsg = "default"
 
     # addStudentMsg = EXECUTE QUERY HERE
+    try:
+        query="""
+        BEGIN;
+        SELECT addNewStudent(%s,'%s');
+        COMMIT;
+        """ % (str(SID),str(SN))
+        cur.execute(query)
+        addMsg-"Student Registered"
+    except Exception as e:
+        print (e)
 
     return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = addStudentMsg)
