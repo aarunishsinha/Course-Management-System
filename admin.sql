@@ -43,7 +43,7 @@ begin
 	insert into courses values ('new2021' || code, name);
 end $$ language plpgsql;
 --EXAMPLE
-select * from addNewCourse('COMP_SCI774','Introduction to Data Mining');
+-- select * from addNewCourse('COMP_SCI774','Introduction to Data Mining');
 /*-----------------------------------------------------------------------------*/
 
 create or replace function addNewStudent(
@@ -51,5 +51,7 @@ create or replace function addNewStudent(
 	name text)
 returns void as $$
 begin
-	insert into students values (id||name);
+	insert into students values (id,name);
 end $$ language plpgsql;
+--EXAMPLE
+-- select * from addNewStudent('1256','Jvgsgwe');
