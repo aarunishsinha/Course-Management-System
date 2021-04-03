@@ -115,7 +115,7 @@ begin
 		start_time,end_time,mon,tues,wed,thurs,fri,sat,sun --schedule data
 		from
 	 	(
-	 		SELECT string_agg(instructor_course.instructor_name::text, ',') as instructors, instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number 
+	 		SELECT string_agg(instructor_course.instructor_name::text, ',') as instructors, instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number
 	 		from instructor_course where instructor_course.course_name ilike CNAME and instructor_course.course_offering_term=TC
 	 		GROUP by instructor_course.course_name, instructor_course.course_offering_uuid, instructor_course.section_number
 
@@ -199,64 +199,6 @@ end $$ LANGUAGE plpgsql;
 -- select * FROM past_course_stats('database'); --
 
 /*-----------------------------------------------------------------------------*/
-
---adding a course. DOES NOT CHECK IF RREJECTED OR NOT. LEFT FOR THE FRONTEND TO DO
---returns 1 when registered, 0 when gone to pending, -1 when already registered (in any 1 section )
-create or replace function add_course(
-	SID bigint,
-	SECN int,
-	COID text)
-returns int as $$
-declare
-	lim int :=(SELECT reg_limit from sections where sections.num=SECN and course_offering_uuid=COID limit 1) ;
-	cap int := (select count(*) from course_registrations where course_offering=COID and section_number=SECN group by course_offering, section_number);
-	registered boolean := exists (select * from course_registrations where course_registrations.course_offering=COID and course_registrations.student_id=SID limit 1);
-begin
-	if(not registered)
-	then 
-		if(cap is null)
-		then
-			cap:=0;
-		end if;
-		if(lim is null)
-		then
-			lim:=0;
-		end if;
-		IF(cap<lim)
-		then
-			insert into course_registrations values (COID,SECN, SID);
-			return 1; 
-		else
-			insert into pending_requests values (COID,SECN, SID);
-			return 0;
-		end if;
-	else 
-		return -1;
-	end if;
-end $$ LANGUAGE plpgsql;
-
---EXAMPLE--
-	-- select * from add_course(12345,1,'new121421648ba2-4c4d-3436-98cb-6989d5263fcd');
-/*-----------------------------------------------------------------------------*/
-
-create or replace function drop_course(
-	SID bigint, --student id
-	COID text	--course offering id
-	)
-returns void as $$
-declare
-	registered boolean := exists (select * from course_registrations where course_registrations.course_offering=COID and course_registrations.student_id=SID);
-begin
-	if (registered)
-	then
-		delete from course_registrations where course_registrations.course_offering =COID and course_registrations.student_id= SID;
-		insert into rejected_requests values (COID, SID);
-	end if;
-end $$ LANGUAGE plpgsql;
---EXAMPLE--
-	-- select * from drop_course(12345,'new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15');
-
-/*-----------------------------------------------------------------------------*/
 create or replace function get_daily_schedule(
 	SID bigint)
 returns table (
@@ -291,4 +233,88 @@ end $$ LANGUAGE plpgsql;
 
 --EXAMPLE
 -- select * from get_daily_schedule(12345);
+/*-----------------------------------------------------------------------------*/
+
+--adding a course. DOES NOT CHECK IF RREJECTED OR NOT. LEFT FOR THE FRONTEND TO DO
+--returns 1 when registered, 0 when gone to pending, -1 when already registered (in any 1 section ), 2 when the course clashes with schedule of another course the student is in
+create or replace function add_course(
+	SID bigint,
+	SECN int,
+	COID text)
+returns int as $$
+declare
+	lim int :=(SELECT reg_limit from sections where sections.num=SECN and course_offering_uuid=COID limit 1) ;
+	cap int := (select count(*) from course_registrations where course_offering=COID and section_number=SECN group by course_offering, section_number);
+	registered boolean := exists (select * from course_registrations where course_registrations.course_offering=COID and course_registrations.student_id=SID limit 1);
+	--also see if there is no clash
+	clash int :=
+	(
+		with s as (select * from get_daily_schedule(SID)),
+		c as (select distinct start_time as start_time_c,end_time as end_time_c,mon as mon_c,tues as tues_c,wed as wed_c,thurs as thurs_c,fri as fri_c,sat as sat_c,sun as sun_c from sections join schedules on sections.schedule_uuid=schedules.uuid where sections.course_offering_uuid=COID and sections.num=SECN )
+		select count(*) from s,c where
+	--is there a clash of days. if yes then see timing
+		(
+			(m and mon_c) or (t and tues_c) or (w and wed_c) or (th and thurs_c) or (f and fri_c) or (sa and sat_c) or (su and sun_c)
+		)
+		and
+		--check timing
+		(
+			not (
+					(start_time<start_time_c and end_time<=start_time_c)
+					or (start_time_c<start_time and end_time_c<=start_time)
+				)
+		)
+	);
+	-- schedules_join schedule_table := (select array(select * from (select * from get_daily_schedule(SID)) s, (select distinct start_time,end_time,mon,tues,wed,thurs,fri,sat,sun from sections join schedules on sections.schedule_uuid=schedules.uuid where sections.course_offering_uuid=COID and sections.num=SECN ) c) as a);
+	-- clash int := (select * from clash(schedules_join));
+begin
+	if(not registered)
+	then
+		if (clash>0 or clash is null)
+		then
+			return 2;--theres a clash with another registered course
+		end if;
+		if(cap is null)
+		then
+			cap:=0;
+		end if;
+		if(lim is null)
+		then
+			lim:=0;
+		end if;
+		IF(cap<lim)
+		then
+			insert into course_registrations values (COID,SECN, SID);
+			return 1;
+		else
+			insert into pending_requests values (COID,SECN, SID);
+			return 0;
+		end if;
+	else
+		return -1;
+	end if;
+	-- return clash;
+end $$ LANGUAGE plpgsql;
+
+--EXAMPLE--
+	-- select * from add_course(12345,1,'new121421648ba2-4c4d-3436-98cb-6989d5263fcd');
+/*-----------------------------------------------------------------------------*/
+
+create or replace function drop_course(
+	SID bigint, --student id
+	COID text	--course offering id
+	)
+returns void as $$
+declare
+	registered boolean := exists (select * from course_registrations where course_registrations.course_offering=COID and course_registrations.student_id=SID);
+begin
+	if (registered)
+	then
+		delete from course_registrations where course_registrations.course_offering =COID and course_registrations.student_id= SID;
+		insert into rejected_requests values (COID, SID);
+	end if;
+end $$ LANGUAGE plpgsql;
+--EXAMPLE--
+	-- select * from drop_course(12345,'new1214e9a360bc-be2d-35d1-9684-a464bbbd0c15');
+
 /*-----------------------------------------------------------------------------*/
