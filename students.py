@@ -77,6 +77,11 @@ def stdDropCourse():
     schedule = [(1,1,1,1,1,1,1,1,1,1,1,1,1),(1,1,1,1,1,1,1,1,1,1,1,1,1)]
 
     # drop the course EXECUTE QUERY 3 here
+    try:
+        query="""
+        BEGIN;
+        SELECT * from drop_course(%s,'%s');
+        """ % (str(studentID),str(COID))
     # schedule = UPDATE Schedule. EXECUTE QUERY 6 HERE. Following order from slides
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = "", searchResults = [])
