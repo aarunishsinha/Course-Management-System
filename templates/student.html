@@ -10,8 +10,8 @@
   {% if schedule|length >0 %}
   <h2>Daily Schedule</h2>
   <div class="Scroll studentScroll">
-  <table>
-    <th>Course Name</th><th>Section Number</th><th>Facility Code</th><th>Room Code</th><th>Start Time</th><th>End Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th><th>Course Offering ID</th><th>Drop</th>
+  <table class="setWidth300">
+    <th class="MorePadding">Course Name</th><th>Section Number</th><th>Facility Code</th><th>Room Code</th><th>Start Time</th><th>End Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th><th class="MorePadding">Course Offering ID</th><th>Drop</th>
     {% for i in range(schedule|length) %}
       <tr>
         <form class="" action="/studentScreen/dropCourse" method="post">
@@ -49,8 +49,8 @@
   {% if searchResults|length >0 %}
   <h2 id="topMargin">Available Courses</h2>
   <div class="Scroll studentScroll">
-    <table>
-      <th >Course Offering ID</th><th>Section Number</th><th>Course Name</th><th>Course Limit</th><th>Instructors</th><th>Department Data</th><th>Facility Code ID</th><th>Room Code ID</th><th>Start Time</th><th>End Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th>
+    <table class="setWidth300">
+    <tr>  <th  class="MorePadding">Course Offering ID</th><th>Section Number</th><th class="MorePadding">Course Name</th><th>Course Limit</th><th class="MorePadding">Instructors</th><th class="MorePadding">Department Data</th><th>Facility Code ID</th><th>Room Code ID</th><th>Start Time</th><th>End Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th></tr>
       {% for i in range(searchResults|length) %}
         <tr>
           <form class="" action="/studentScreen/addCourse" method="post">
