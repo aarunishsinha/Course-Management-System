@@ -34,6 +34,7 @@ def adminStartAddDrop():
         startMsg="Add/Drop Period started for Term" + str(TC)
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("Admin.html",startMsg = startMsg, endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg="")
 
@@ -55,6 +56,7 @@ def adminEndAddDrop():
         endMsg="Add/Drop Period ended for Term" + str(TC)
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("Admin.html",startMsg = "", endMsg=endMsg, checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg="")
 
@@ -80,6 +82,7 @@ def adminIsAddDropOn():
             checkMsg="Add/Drop is OFF"
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
 
     return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = checkMsg, addMsg = "", addStudentMsg = "", startTermMsg="")
@@ -102,6 +105,7 @@ def adminaddCourse():
         addMsg="Course added"
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = addMsg, addStudentMsg = "", startTermMsg="")
 
