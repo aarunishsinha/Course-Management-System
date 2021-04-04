@@ -4,6 +4,7 @@ create or replace function start_addDrop(
 returns void as $$
 begin
 insert into addDrop values (tc);
+delete from course_registrations;
 delete from pending_requests;
 delete from rejected_requests;
 end $$ language plpgsql;
