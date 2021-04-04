@@ -68,7 +68,7 @@ table input[type="text"]{
   margin: 10px;
 }
 
-table th{
+.setWidth300 th{
   white-space:nowrap;
   padding: 0px 30px;
 }
