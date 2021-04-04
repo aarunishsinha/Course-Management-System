@@ -2,7 +2,7 @@ from flask import Blueprint, Flask, render_template, send_from_directory, reques
 import os
 import psycopg2
 
-conn = psycopg2.connect('dbname=postgres')
+conn = psycopg2.connect('dbname=group_13 user=group_13 password=p0XvR8Ch4BAGb host=10.17.50.232 port=5432')
 
 cur = conn.cursor()
 

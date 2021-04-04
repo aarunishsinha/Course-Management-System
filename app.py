@@ -8,7 +8,8 @@ from Admin import adminRoutes
 # import numpy as np
 # import pandas as pd
 
-conn = psycopg2.connect('dbname=postgres')
+# conn = psycopg2.connect('dbname=postgres')
+conn = psycopg2.connect('dbname=group_13 user=group_13 password=p0XvR8Ch4BAGb host=10.17.50.232 port=5432')
 
 cur = conn.cursor()
 
