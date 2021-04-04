@@ -66,5 +66,5 @@ begin
 end $$ language plpgsql;
 
 --EXAMPLE
-select * from start_term(1214);
+-- select * from start_term(1214);
 /*-----------------------------------------------------------------------------*/
