@@ -88,11 +88,21 @@ def stdDropCourse():
     COID = request.form.get("COID")
     addMsg=""
     schedule = [(1,1,1,1,1,1,1,1,1,1,1,1,1),(1,1,1,1,1,1,1,1,1,1,1,1,1)]
-
+    TC =""
     # drop the course EXECUTE QUERY 3 here
     is_it=""
     # status  = EXECUTE QUERY HERE
-
+    try:
+        query1="""
+        BEGIN;
+        SELECT * from current_term;
+        """
+        cur.execute(query1)
+        TC=cur.fetchall()
+        cur.execute("COMMIT;")
+        TC=TC[0][0]
+    except Exception as e:
+        print(e)
     try:
         query="""
         BEGIN;
@@ -156,8 +166,19 @@ def stdAddCourse():
     check_reg = 0
     addMsg="default"
     is_it=""
+    TC = ""
     # status  = EXECUTE QUERY HERE
-
+    try:
+        query1="""
+        BEGIN;
+        SELECT * from current_term;
+        """
+        cur.execute(query1)
+        TC=cur.fetchall()
+        cur.execute("COMMIT;")
+        TC=TC[0][0]
+    except Exception as e:
+        print(e)
     try:
         query="""
         BEGIN;
