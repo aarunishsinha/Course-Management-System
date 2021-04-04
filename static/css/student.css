@@ -47,6 +47,32 @@ th{
 /* input[type="text", readonly]{
   width: 200px;
 } */
-.searchCourse table th{
+/* .searchCourse table th{
   width: 300px;
+} */
+/* .setWidth300{
+  column-width: 300px;
+}
+form input[type="text"]{
+  width: 300px;
+} */
+tr{
+  margin: 20px;
+}
+
+table{
+  table-layout: auto;
+}
+table input[type="text"]{
+  width: 80%;
+  margin: 10px;
+}
+
+.setWidth300 th{
+  white-space:nowrap;
+  padding: 0px 30px;
+}
+
+.MorePadding{
+  padding: 0px 70px;
 }
