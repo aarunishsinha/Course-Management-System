@@ -123,6 +123,7 @@ def adminaddStudent():
         addStudentMsg="Student Registered"
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("Admin.html",startMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = addStudentMsg, startTermMsg="")
 
@@ -143,6 +144,7 @@ def adminStartTerm():
     except Exception as e:
         print (e)
         termMsg = "Error Starting the Term"
+        cur.execute("ROLLBACK;")
     # termMsg = "Error Starting the Term"  -- add under exception block
 
     return render_template("Admin.html", StartMsg = "", endMsg="", checkMsg = "", addMsg = "", addStudentMsg = "", startTermMsg=termMsg)
