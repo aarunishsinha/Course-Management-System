@@ -52,6 +52,7 @@ def inst():
         TC=TC[0][0]
     except Exception as e:
         print(e)
+        cur.execute("ROLLBACK;")
     # schedule = EXECUTE DATABASE QUERY HERE
     try:
         query="""
@@ -63,28 +64,29 @@ def inst():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
-        try:
-            query1="""
-            BEGIN;
-            SELECT * from current_term;
-            """
-            cur.execute(query1)
-            TC=cur.fetchall()
-            cur.execute("COMMIT;")
-            TC=TC[0][0]
-        except Exception as e:
-            print(e)
-        # schedule = EXECUTE DATABASE QUERY HERE
-        try:
-            query="""
-            BEGIN;
-            SELECT * from get_instructor_schedule(%s,%s);
-            """ % (str(currentProfLoginId),str(TC))
-            cur.execute(query)
-            schedule=cur.fetchall()
-            cur.execute("COMMIT;")
-        except Exception as e:
-            print (e)
+        cur.execute("ROLLBACK;")
+        # try:
+        #     query1="""
+        #     BEGIN;
+        #     SELECT * from current_term;
+        #     """
+        #     cur.execute(query1)
+        #     TC=cur.fetchall()
+        #     cur.execute("COMMIT;")
+        #     TC=TC[0][0]
+        # except Exception as e:
+        #     print(e)
+        # # schedule = EXECUTE DATABASE QUERY HERE
+        # try:
+        #     query="""
+        #     BEGIN;
+        #     SELECT * from get_instructor_schedule(%s,%s);
+        #     """ % (str(currentProfLoginId),str(TC))
+        #     cur.execute(query)
+        #     schedule=cur.fetchall()
+        #     cur.execute("COMMIT;")
+        # except Exception as e:
+        #     print (e)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
@@ -113,6 +115,7 @@ def instAC():
         TC=TC[0][0]
     except Exception as e:
         print(e)
+        cur.execute("ROLLBACK;")
     # EXECUTE DATABASE QUERY HERE
     try:
         query="""
@@ -123,6 +126,18 @@ def instAC():
         cur.execute(query)
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
+    try:
+        query="""
+        BEGIN;
+        SELECT * from get_instructor_schedule(%s,%s);
+        """ % (str(currentProfLoginId),str(TC))
+        cur.execute(query)
+        schedule=cur.fetchall()
+        cur.execute("COMMIT;")
+    except Exception as e:
+        print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
@@ -149,6 +164,7 @@ def instRequests():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
     # print(requests)
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
@@ -173,6 +189,7 @@ def instProcessRequests():
             cur.execute(query)
         except Exception as e:
             print (e)
+            cur.execute("ROLLBACK;")
     else:
         # a  = 2 # dummy line
         try:
@@ -184,6 +201,7 @@ def instProcessRequests():
             cur.execute(query)
         except Exception as e:
             print (e)
+            cur.execute("ROLLBACK;")
 
     # requests = EXECUTE DATABASE QUERY HERE
     try:
@@ -196,6 +214,7 @@ def instProcessRequests():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = requests, enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
@@ -222,6 +241,7 @@ def instSchedule():
         TC=TC[0][0]
     except Exception as e:
         print(e)
+        cur.execute("ROLLBACK;")
     # schedule = EXECUTE DATABASE QUERY HERE
     try:
         query="""
@@ -233,6 +253,7 @@ def instSchedule():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
     # print(schedule);
     #  Will make schedule.html once query is executed and exact form is known
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
@@ -258,6 +279,7 @@ def instEnrollments():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = enrollment,addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
@@ -297,6 +319,7 @@ def instAddGD():
         cur.execute(query)
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
         addGradeMsg="Error occured while updating"
 
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = addGradeMsg, grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=[])
@@ -319,6 +342,7 @@ def instGetGD():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = grades, room = "", facultyCode = "", schedule = schedule, searchResults=[])
 
 @app.route("/instructorScreen/room", methods = ["POST"])
@@ -339,6 +363,7 @@ def instRoom():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     room = output[0][0]
     facultyCode = output[0][1]
@@ -362,6 +387,7 @@ def instsearchCourse():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
     return render_template("instructor.html",currentProfLoginId = currentProfLoginId,AddCourseMsg="", requests = [], enrollment = [],addGradeMsg = "", grades = [], room = "", facultyCode = "", schedule = schedule, searchResults=searchResults)
 
 

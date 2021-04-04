@@ -29,6 +29,7 @@ def std():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = "", searchResults = [])
 
@@ -52,6 +53,7 @@ def stdSearchCourse():
         TC=TC[0][0]
     except Exception as e:
         print(e)
+        cur.execute("ROLLBACK;")
     # searchResults = EXECUTE QUERY 6 HERE. Following order from slides
     try:
         query="""
@@ -63,6 +65,7 @@ def stdSearchCourse():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = "", searchResults = searchResults)
 
@@ -103,6 +106,7 @@ def stdDropCourse():
         TC=TC[0][0]
     except Exception as e:
         print(e)
+        cur.execute("ROLLBACK;")
     try:
         query="""
         BEGIN;
@@ -114,6 +118,7 @@ def stdDropCourse():
         is_it = is_it[0][0]
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
     if is_it==True:
         try:
             query="""
@@ -125,6 +130,7 @@ def stdDropCourse():
             addMsg="Course Dropped"
         except Exception as e:
             print (e)
+            cur.execute("ROLLBACK;")
     else:
         addMsg="Add/Drop has not started yet"
     # schedule = UPDATE Schedule. EXECUTE QUERY 6 HERE. Following order from
@@ -138,6 +144,7 @@ def stdDropCourse():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = addMsg, searchResults = [])
 
@@ -179,6 +186,7 @@ def stdAddCourse():
         TC=TC[0][0]
     except Exception as e:
         print(e)
+        cur.execute("ROLLBACK;")
     try:
         query="""
         BEGIN;
@@ -190,6 +198,7 @@ def stdAddCourse():
         is_it = is_it[0][0]
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
     if is_it==True:
         try:
             query1="""
@@ -202,6 +211,7 @@ def stdAddCourse():
             cur.execute("COMMIT;")
         except Exception as e:
             print(e)
+            cur.execute("ROLLBACK;")
         if check_reg==1:
             addMsg="You are not allowed to add this course in the current term"
         else:
@@ -237,6 +247,7 @@ def stdAddCourse():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
     print (addMsg)
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = [], addMsg = addMsg, searchResults = [])
 
@@ -259,5 +270,6 @@ def stdPastStats():
         cur.execute("COMMIT;")
     except Exception as e:
         print (e)
+        cur.execute("ROLLBACK;")
 
     return render_template("student.html", studentID = studentID, schedule = schedule, pastStats = pastStats, addMsg = "", searchResults = [])
