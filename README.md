@@ -14,10 +14,21 @@ A demostration of our working system is present on google drive: [Demo Video]
 ## Installation Instructions
 
 - Clone this repository on your local computer.
-- Our project uses flask and psycopg2-binary so oe needs to download the same before use. The following command downloads the same.
+- Our project uses flask and psycopg2-binary so it needs to download the same before execution. You may use the command below.
 ```
 bash setup_front_end.sh
 ```
+- Below are the configurations for the Postgres Server:
+```
+dbname=group_13
+user=group_13
+port=5432
+```
+Note: You must change the host's IP address in the following files before proceeding any further
+1. [app.py](https://github.com/aarunishsinha/Course-Management-System/blob/main/app.py) (Line No. - 12)
+2. [students.py](https://github.com/aarunishsinha/Course-Management-System/blob/main/students.py) (Line No. - 5)
+3. [Admin.py](https://github.com/aarunishsinha/Course-Management-System/blob/main/Admin.py) (Line No. - 6)
+- Download the [data dump](https://drive.google.com/drive/folders/1HDx3uShbgdi1MJdjkv7QZJDr8yh0lLM7?usp=sharing) and upload it on the Postgres server.
 - To start the flash server do
 ```
 bash run.sh
