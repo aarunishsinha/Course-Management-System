@@ -30,7 +30,7 @@ Note: You must change the host's IP address in the following files before procee
 3. [Admin.py](https://github.com/JaiJaveria/Course_Management_System/blob/main/Admin.py) (Line No. - 6)
 - Download the [data dump](https://drive.google.com/drive/folders/1HDx3uShbgdi1MJdjkv7QZJDr8yh0lLM7?usp=sharing) and upload it on the Postgres server.
 
-- To start the flash server do
+- To start the flask server do
 ```
 bash run.sh
 ```
