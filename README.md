@@ -14,7 +14,7 @@ A demostration of our working system is present on google drive: [DemoVideo]
 ## Installation Instructions
 
 - Clone this repository on your local computer.
-- Our project uses flask and psycopg2-binary so oe needs to download the same before use. The following command downloads the same.
+- Our project uses flask and psycopg2-binary so one needs to download the same before use. The following command downloads the same.
 ```
 bash setup_front_end.sh
 ```
